@@ -1,0 +1,82 @@
+models:
+#  Invoice:
+#    no: string
+#    buyer_id: id foreign:buyers
+#    type: string
+#    status: string
+#    payment_status: string
+#    place: string nullable
+#    sale_date: date nullable
+#    due_date: date nullable
+#    issue_date: string
+#    parent_id: id nullable foreign:invoices
+#    user_id: id foreign:users
+#    # payment_method_id: id foreign:payment_methods
+#    comment: string nullable
+#    currency: string length:4 default:EUR
+#    issuer_name: string nullable
+#    grand_total_net: decimal:10,2 default:0
+#    grand_total_gross: decimal:10,2 default:0
+#    grand_total_tax: decimal:10,2 default:0
+#    grand_total_discount: decimal:10,2 default:0
+#    paid: decimal:10,2 default:0
+#    due: decimal:10,2 default:0
+#    path: string nullable
+#    timestamps: true
+#
+#
+#  InvoiceItem:
+#    name: string nullable
+#    quantity: string nullable
+#    price_net: decimal:10,2 nullable
+#    price_gross: decimal:10,2 nullable
+#    tax_rate: string nullable
+#    tax_amount: decimal:10,2 nullable
+#    discount: decimal:10,2 nullable
+#    discount_type: string nullable
+#    total_net: decimal:10,2 nullable
+#    total_gross: decimal:10,2 nullable
+#    total_tax: decimal:10,2 nullable
+#    total_discount: decimal:10,2 nullable
+#    invoice_id: id foreign:invoices onDelete:cascade
+#    timestamps: true
+#
+#  Buyer:
+#    name: string
+#    company_name: string nullable
+#    email: string nullable
+#    phone: string nullable
+#    address: string nullable
+#    city: string nullable
+#    postal_code: string nullable
+#    country: string nullable
+#    nip: string length:20 nullable
+#    regon: string length:20 nullable
+#    krs: string length:20 nullable
+#    timestamps: true
+#    softDeletes: true
+#
+  Cost:
+    name: string
+    amount: decimal:10,2
+    description: text nullable
+    date: date
+    category_id: id foreign:cost_categories.id
+    invoice_number: string nullable
+    invoice_file_path: string nullable
+    receipt_file_path: string nullable
+    invoice_date: date nullable
+    invoice_due_date: date nullable
+    is_paid: boolean default:false
+    payment_date: date nullable
+    user_id: id foreign:users.id
+    timestamps: true
+    softDeletes: true
+
+  CostCategory:
+    name: string unique
+    description: text nullable
+    color: string nullable # For UI visualization
+    is_tax_related: boolean default:false
+    timestamps: true
+

@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'cost'         => 'Cost',
+    'costs'        => 'Costs',
+    'cost_category'=> 'Cost Category',
+    'cost_categories'=> 'Cost Categories',
+    'name'         => 'Name',
+    'amount'       => 'Amount',
+    'description' => 'Description',
+    'date'         => 'Date',
+    'category'     => 'Category',
+    'file_path'     => 'Receipt File Path',
+    'payment_date'  => 'Payment Date',
+    'invoice_number' => 'Invoice Number',
+    'invoice_date'  => 'Invoice Date',
+    'invoice_file'  => 'Invoice File Path',
+    'invoice_due'   => 'Invoice Due Date',
+    'color'         => 'Color',
+    'tax_related'   => 'Tax Related',
+    'costs_sum'    => 'Cost sum',
+    'month'        => 'This month',
+    'week'         => 'Last week',
+    'year'         => 'This year',
+    ];

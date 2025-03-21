@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'cost'         => 'Koszt',
+    'costs'        => 'Koszty',
+    'cost_category'=> 'Kategoria kosztów',
+    'cost_categories'=> 'Kategorie kosztów',
+    'name'         => 'Nazwa',
+    'amount'       => 'Kwota',
+    'description'   => 'Opis',
+    'date'         => 'Data',
+    'category'     => 'Kategoria',
+    'file_path'     => 'Skan rachunku',
+    'payment_date'  => 'Data płatności',
+    'invoice_number' => 'Numer Faktury',
+    'invoice_date'  => 'Data wystawienia faktury',
+    'invoice_file'  => 'Skan faktury',
+    'invoice_due'   => 'Płatność do',
+    'color'         => 'Kolor',
+    'tax_related'   => 'Dotyczy podatków',
+    'costs_sum'    => 'Suma kosztów',
+    'month'        => 'Ten miesiąc',
+    'week'         => 'Ostatni tydzeń',
+    'year'         => 'Ten rok',
+    ];

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\InvoiceResource\Widgets\InvoicesWidget;
 use Coolsam\Modules\ModulesPlugin;
 use Filament\Pages;
 use Filament\Panel;
@@ -49,7 +50,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-
+                InvoicesWidget::class
             ])
             ->middleware([
                 EncryptCookies::class,

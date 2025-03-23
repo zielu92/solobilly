@@ -16,9 +16,21 @@ class PaymentMethodResource extends Resource
 {
     protected static ?string $model = PaymentMethodModel::class;
 
-    protected static ?string $label = "Payment method";
     protected static ?string $navigationGroup = 'Settings';
-    protected static ?string $navigationLabel = 'Payment methods list';
+    public static function getNavigationLabel(): string
+    {
+        return __('payments::payments.payment_methods');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('payments::payments.payment_methods');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('payments::payments.payment_methods');
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -30,12 +42,19 @@ class PaymentMethodResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('payments::payments.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label(__('payments::payments.description'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('method')
+                    ->label(__('payments::payments.method'))
+                    ->state(function ($record): string {
+                        return __('payments::payments.methods.'.strtolower($record['method']));
+                    })
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('active')
+                    ->label(__('payments::payments.active'))
                     ->searchable(),
             ])
             ->filters([
@@ -47,7 +66,7 @@ class PaymentMethodResource extends Resource
                     ->visible(function ($record) {
                         return PaymentMethodsManager::canEdit(strtolower($record->method));
                     })
-                    ->label("Setup")
+                    ->label(__('payments::payments.setup'))
                     ->icon('heroicon-o-wrench-screwdriver')
                     ->url(function ($record) {
                         return PaymentMethodsManager::getEditCreateRoute(strtolower($record->method), $record);

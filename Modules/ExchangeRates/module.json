@@ -1,0 +1,11 @@
+{
+    "name": "ExchangeRates",
+    "alias": "exchangerates",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ExchangeRates\\Providers\\ExchangeRatesServiceProvider"
+    ],
+    "files": []
+}

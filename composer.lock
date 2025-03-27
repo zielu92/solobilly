@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7147d2033b1bfa52ecd2f5f3443c34e0",
+    "content-hash": "62439a1e478baf30a7a2ec6b89a482b1",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3423,6 +3423,74 @@
                 }
             ],
             "time": "2025-03-04T21:48:52+00:00"
+        },
+        {
+            "name": "maciej-sz/nbp-php",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maciej-sz/nbp-php.git",
+                "reference": "e23c6feecf1db1bef99004c63b3b041ecda13957"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maciej-sz/nbp-php/zipball/e23c6feecf1db1bef99004c63b3b041ecda13957",
+                "reference": "e23c6feecf1db1bef99004c63b3b041ecda13957",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "donatj/mock-webserver": "^2.6",
+                "friendsofphp/php-cs-fixer": "^3.16",
+                "guzzlehttp/guzzle": "^7.9",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.6",
+                "qossmic/deptrac": "^2.0",
+                "symfony/cache": "^7.2",
+                "symfony/http-client": "^7.2"
+            },
+            "suggest": {
+                "psr/cache": "Allows local cache",
+                "symfony/http-client": "Symfony HTTP Transport layer"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Shared/Domain/DateFormatter/functions.php"
+                ],
+                "psr-4": {
+                    "MaciejSz\\Nbp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maciej Szopiński",
+                    "email": "maciej.sz@gmail.com"
+                }
+            ],
+            "description": "API for accessing Polish National Bank (NBP - Narodowy Bank Polski) currency and commodities exchange rates",
+            "keywords": [
+                "Rate",
+                "commodity",
+                "currency",
+                "exchange",
+                "gold",
+                "money",
+                "nbp",
+                "rates"
+            ],
+            "support": {
+                "issues": "https://github.com/maciej-sz/nbp-php/issues",
+                "source": "https://github.com/maciej-sz/nbp-php/tree/v2.1.0"
+            },
+            "time": "2025-02-02T17:12:11+00:00"
         },
         {
             "name": "masterminds/html5",

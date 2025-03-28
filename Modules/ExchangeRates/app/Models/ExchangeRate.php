@@ -15,6 +15,8 @@ class ExchangeRate extends Model
      */
     protected $fillable = ['type', 'date', 'value', 'currency', 'base_currency', 'source'];
 
+    protected static ?string $model = ExchangeRate::class;
+
     // protected static function newFactory(): ExchangeRateFactory
     // {
     //     // return ExchangeRateFactory::new();

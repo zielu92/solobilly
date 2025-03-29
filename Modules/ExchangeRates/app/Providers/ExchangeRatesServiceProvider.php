@@ -19,7 +19,10 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     protected string $nameLower = 'exchangerates';
 
     /**
-     * Boot the application events.
+     * Boot the service provider.
+     *
+     * This method initializes the module by registering its commands, scheduled tasks, translations, configuration,
+     * views, and database migrations.
      */
     public function boot(): void
     {
@@ -32,7 +35,9 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the service provider.
+     * Registers module-dependent service providers for the Exchange Rates module.
+     *
+     * This method registers the EventServiceProvider and RouteServiceProvider, ensuring that the module's event listeners and routing configurations are initialized during the application's boot process.
      */
     public function register(): void
     {
@@ -41,7 +46,9 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register commands in the format of Command::class
+     * Registers the ExchangeRates module's console commands.
+     *
+     * This method registers the CheckExchangeRates command, enabling its execution via the application's CLI.
      */
     protected function registerCommands(): void
     {
@@ -51,7 +58,9 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register command Schedules.
+     * Schedules the 'exchange-rates:check' command to run daily at 9:00 AM.
+     *
+     * This method registers a callback to add the command to the application's scheduler once the application has booted.
      */
     protected function registerCommandSchedules(): void
     {
@@ -62,7 +71,11 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register translations.
+     * Registers the module's translation files.
+     *
+     * This method checks for a custom translation directory within the application's
+     * resources. If the directory exists, it loads both standard and JSON translations
+     * from there. Otherwise, it falls back to the module's default language files.
      */
     public function registerTranslations(): void
     {
@@ -78,7 +91,15 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register config.
+     * Registers and publishes the module's configuration files.
+     *
+     * This method locates PHP configuration files from the module's configuration directory,
+     * publishes each file to the application's configuration path, and merges its settings
+     * into the application's configuration repository using a namespaced key derived from
+     * the module's lowercase name. The primary configuration file ('config.php') is handled
+     * with a simplified key.
+     *
+     * @return void
      */
     protected function registerConfig(): void
     {
@@ -102,7 +123,11 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register views.
+     * Registers the module's view templates and Blade component namespace.
+     *
+     * This method publishes the module's views from its resources directory to the application's view path,
+     * loads views from both the published and original module source paths, and sets up a corresponding Blade
+     * component namespace to facilitate the use of module-specific Blade components.
      */
     public function registerViews(): void
     {
@@ -118,13 +143,23 @@ class ExchangeRatesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Get the services provided by the provider.
+     * Returns an empty array, indicating that this provider does not bind any services.
+     *
+     * @return array An empty array.
      */
     public function provides(): array
     {
         return [];
     }
 
+    /**
+     * Retrieves the list of publishable view paths for the module.
+     *
+     * Iterates over the application's configured view paths and collects any directory
+     * that matches the module's designated view directory (based on its lowercase name).
+     *
+     * @return array An array of valid paths where the module's view files are located.
+     */
     private function getPublishableViewPaths(): array
     {
         $paths = [];

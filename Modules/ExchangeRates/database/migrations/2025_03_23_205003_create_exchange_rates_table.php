@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->date('date');
-            $table->float('value');
+            $table->decimal('value', 10, 6);
             $table->string('currency');
             $table->string('base_currency');
             $table->string('source')->default('NBP');

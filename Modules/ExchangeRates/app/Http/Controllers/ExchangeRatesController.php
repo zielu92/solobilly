@@ -28,7 +28,20 @@ class ExchangeRatesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'value' => 'required|numeric',
+            'currency' => 'required|string|max:10',
+            'base_currency' => 'required|string|max:10|different:currency',
+            'source' => 'required|string|max:255',
+        ]);
+        
+        $validated['type'] = 'Manual';
+        
+        ExchangeRate::create($validated);
+        
+        return redirect()->route('exchangerates.index')
+            ->with('success', __('exchangerates::rates.created_successfully'));
     }
 
     /**

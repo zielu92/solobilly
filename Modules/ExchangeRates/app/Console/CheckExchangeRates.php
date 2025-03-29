@@ -22,7 +22,11 @@ class CheckExchangeRates extends Command
     protected $description = 'Check and store exchange rates';
 
     /**
-     * Execute the console command.
+     * Executes the exchange rate command to fetch and store average rates from the NBP service.
+     *
+     * If the default currency is PLN, this method calculates the last workday's date and logs the retrieval date. It then iterates
+     * through the configured currencies (excluding PLN), fetching the average exchange rate for each currency from the external service,
+     * and updates or creates the corresponding exchange rate record in the database. Any errors encountered during the rate retrieval process are logged.
      */
     public function handle()
     {
@@ -57,6 +61,14 @@ class CheckExchangeRates extends Command
         }
     }
 
+    /**
+     * Returns the last workday date, adjusting for weekends.
+     *
+     * This method computes yesterday's date and, if it falls on Saturday or Sunday,
+     * adjusts the result to the preceding Friday. Note: Holidays are not considered.
+     *
+     * @return \Carbon\Carbon The last workday date.
+     */
     private function getLastWorkday()
     {
         //todo: consider also a holidays...

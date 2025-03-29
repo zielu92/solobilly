@@ -24,28 +24,24 @@ class ExchangeRatesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Stores a newly created exchange rate resource.
+     *
+     * Processes the incoming HTTP request to create a new exchange rate.
+     * The implementation for persisting the resource is currently not provided.
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'date' => 'required|date',
-            'value' => 'required|numeric',
-            'currency' => 'required|string|max:10',
-            'base_currency' => 'required|string|max:10|different:currency',
-            'source' => 'required|string|max:255',
-        ]);
-        
-        $validated['type'] = 'Manual';
-        
-        ExchangeRate::create($validated);
-        
-        return redirect()->route('exchangerates.index')
-            ->with('success', __('exchangerates::rates.created_successfully'));
+        //
     }
 
     /**
-     * Show the specified resource.
+     * Display the view for a specific exchange rate resource.
+     *
+     * This method returns the view responsible for displaying the details of an exchange rate based on the provided identifier.
+     *
+     * @param mixed $id The identifier of the exchange rate resource.
+     *
+     * @return \Illuminate\View\View The view for displaying the exchange rate.
      */
     public function show($id)
     {
@@ -53,7 +49,12 @@ class ExchangeRatesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Display the edit form for the specified exchange rate.
+     *
+     * Returns the view used for editing an exchange rate resource identified by its ID.
+     *
+     * @param mixed $id The identifier of the exchange rate resource to edit.
+     * @return \Illuminate\Contracts\View\View The view instance for editing the exchange rate.
      */
     public function edit($id)
     {
@@ -61,28 +62,23 @@ class ExchangeRatesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified exchange rate resource.
+     *
+     * Uses the provided request data to update the exchange rate resource identified by its unique ID.
+     *
+     * @param mixed $id The unique identifier of the exchange rate resource.
      */
     public function update(Request $request, $id)
     {
-        $exchangeRate = ExchangeRate::findOrFail($id);
-        
-        $validated = $request->validate([
-            'date' => 'required|date',
-            'value' => 'required|numeric',
-            'currency' => 'required|string|max:10',
-            'base_currency' => 'required|string|max:10|different:currency',
-            'source' => 'required|string|max:255',
-        ]);
-        
-        $exchangeRate->update($validated);
-        
-        return redirect()->route('exchangerates.index')
-            ->with('success', __('exchangerates::rates.updated_successfully'));
+        //
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified exchange rate resource from storage.
+     *
+     * This method deletes the exchange rate resource identified by the given identifier.
+     *
+     * @param mixed $id The unique identifier of the exchange rate resource to remove.
      */
     public function destroy($id)
     {

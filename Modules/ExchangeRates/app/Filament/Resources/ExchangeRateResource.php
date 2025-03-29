@@ -21,20 +21,50 @@ class ExchangeRateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    /**
+     * Returns the localized navigation label for the exchange rates resource.
+     *
+     * @return string The localized label for navigation.
+     */
     public static function getNavigationLabel(): string
     {
         return __('exchangerates::rates.exchange_rates');
     }
 
+    /**
+     * Retrieves the localized singular label for the ExchangeRate model.
+     *
+     * @return string The singular model label.
+     */
     public static function getModelLabel(): string
     {
         return __('exchangerates::rates.exchange_rates');
     }
 
+    /**
+     * Returns the localized plural label for the ExchangeRate model.
+     *
+     * This label is used in the admin panel to represent the plural form of exchange rates.
+     *
+     * @return string Localized plural label.
+     */
     public static function getPluralModelLabel(): string
     {
         return __('exchangerates::rates.exchange_rates');
     }
+    /**
+     * Configures and returns the form schema for exchange rate entries.
+     *
+     * The schema consists of:
+     * - A required date picker for selecting the exchange rate date.
+     * - A required numeric input for the exchange rate value.
+     * - Reactive select inputs for currency and base currency that ensure the same currency is not selected for both fields.
+     * - A required text input for the source with a maximum length of 255 characters, defaulting to "NBP".
+     *
+     * @param \Filament\Forms\Form $form The form instance to configure.
+     *
+     * @return \Filament\Forms\Form The form instance with the configured schema.
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -99,6 +129,17 @@ class ExchangeRateResource extends Resource
             ]);
     }
 
+    /**
+     * Configures the table for displaying exchange rate records.
+     *
+     * Sets up a Filament table instance with columns for date, value, currency, base currency, and source,
+     * each equipped with sorting, searching, and appropriate data formatting. Adds actions for editing
+     * and deleting individual records, along with a bulk delete action group.
+     *
+     * @param Table $table The table instance to configure.
+     *
+     * @return Table The configured table instance.
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -136,6 +177,13 @@ class ExchangeRateResource extends Resource
             ]);
     }
 
+    /**
+     * Returns the relationships defined for this resource.
+     *
+     * Currently, no relationships are specified.
+     *
+     * @return array An empty array indicating that no relationships exist.
+     */
     public static function getRelations(): array
     {
         return [
@@ -143,6 +191,16 @@ class ExchangeRateResource extends Resource
         ];
     }
 
+    /**
+     * Provides the routes for exchange rate resource pages.
+     *
+     * Returns an associative array mapping page identifiers to their corresponding route definitions:
+     * - 'index': the route for listing exchange rate records.
+     * - 'create': the route for creating a new exchange rate.
+     * - 'edit': the dynamic route for editing an existing exchange rate (using the {record} identifier).
+     *
+     * @return array<string, mixed> An array of page route definitions.
+     */
     public static function getPages(): array
     {
         return [

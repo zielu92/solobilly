@@ -28,6 +28,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Modules\ExchangeRates\Filament\Resources\ExchangeRateResource;
 use Modules\Payments\Filament\Resources\PaymentMethodResource;
 use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
@@ -78,6 +79,7 @@ class AppPanelProvider extends PanelProvider
                                 ...Settings::getNavigationItems(),
                                 ...Backups::getNavigationItems(),
                                 ...PaymentMethodResource::getNavigationItems(),
+                                ...ExchangeRateResource::getNavigationItems(),
                             ]),
                     ]);
             })

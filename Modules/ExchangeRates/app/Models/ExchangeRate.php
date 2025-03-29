@@ -15,6 +15,16 @@ class ExchangeRate extends Model
      */
     protected $fillable = ['type', 'date', 'value', 'currency', 'base_currency', 'source'];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'date' => 'date',
+        'value' => 'float',
+    ];
+
     protected static ?string $model = ExchangeRate::class;
 
     // protected static function newFactory(): ExchangeRateFactory

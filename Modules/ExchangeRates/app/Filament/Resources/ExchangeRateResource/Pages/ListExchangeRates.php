@@ -22,11 +22,19 @@ class ListExchangeRates extends ListRecords
                 ->icon('heroicon-m-arrow-down-circle')
                 ->requiresConfirmation()
                 ->action(function ($livewire) {
-                    Artisan::call('exchange-rates:check');
-                    Notification::make()
-                        ->title(__('exchangerates::rates.notification_fetch'))
-                        ->success()
-                        ->send();
+                    try {
+                        $result = Artisan::call('exchange-rates:check');
+                        Notification::make()
+                            ->title(__('exchangerates::rates.notification_fetch'))
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title(__('exchangerates::rates.notification_fetch_error'))
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
                 }),
             Actions\CreateAction::make(),
         ];

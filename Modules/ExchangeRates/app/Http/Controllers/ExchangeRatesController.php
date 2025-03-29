@@ -65,7 +65,20 @@ class ExchangeRatesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $exchangeRate = ExchangeRate::findOrFail($id);
+        
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'value' => 'required|numeric',
+            'currency' => 'required|string|max:10',
+            'base_currency' => 'required|string|max:10|different:currency',
+            'source' => 'required|string|max:255',
+        ]);
+        
+        $exchangeRate->update($validated);
+        
+        return redirect()->route('exchangerates.index')
+            ->with('success', __('exchangerates::rates.updated_successfully'));
     }
 
     /**

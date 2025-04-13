@@ -36,6 +36,7 @@ class PaymentMethodModel extends Model
                 ->maxLength(255)
                 ->default(null),
             Select::make('method')
+                ->required()
                 ->options(
                     collect(PaymentMethodsManager::getPaymentMethods())->mapWithKeys(function ($method) {
                         return [$method['method'] => __('payments::payments.methods.'.strtolower($method['method_title']))];

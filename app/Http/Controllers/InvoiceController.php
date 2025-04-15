@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use http\Env;
 use Modules\Payments\PaymentMethodsManager;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -26,9 +27,11 @@ class InvoiceController extends Controller
             ->format('a4')
             ->name("#{$invoice->no}")
             ->withBrowsershot(function (Browsershot $browsershot) {
-                $browsershot->noSandbox()
-                    ->setChromePath('/home/sail/.cache/puppeteer/chrome/linux_arm-135.0.7049.84/chrome-linux64/chrome');
-
+                $browsershot
+                    ->setChromePath(Env('CHROME_PATH'))
+                    ->setNodeBinary('/usr/bin/node')
+                    ->setNpmBinary('/usr/bin/npm')
+                    ->noSandbox();
             });
 
     }

@@ -37,6 +37,7 @@ services:
         MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
       volumes:
         - 'sail-mariadb:/var/lib/mysql'
+        - './vendor/laravel/sail/database/mariadb/create-testing-database.sh:/data/compose/37/vendor/laravel/sail/database/mariadb/create-testing-database.sh'
       networks:
         - sail
       healthcheck:

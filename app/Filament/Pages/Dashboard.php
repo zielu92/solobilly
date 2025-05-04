@@ -14,6 +14,14 @@ class Dashboard extends BaseDashboard
 {
     use HasFiltersForm, HasFiltersAction;
 
+    /**
+     * Builds and returns a filter form with start and end date pickers for the dashboard.
+     *
+     * The form includes two date pickers: one for the start date (defaulting to the first day of the current month, with a maximum of yesterday) and one for the end date (defaulting to today, with a minimum of the selected start date and a maximum of today). Both fields trigger a filter update event when changed.
+     *
+     * @param Form $form The form instance to configure.
+     * @return Form The configured form schema with date filters.
+     */
     public function filtersForm(Form $form): Form
     {
         return $form
@@ -45,7 +53,9 @@ class Dashboard extends BaseDashboard
     }
 
     /**
-     * Explicitly dispatch the filters updated event with current filters
+     * Dispatches a page filter updated event with the current filter values.
+     *
+     * Triggers the 'filament.pageFilterUpdated' event, passing the current filters as event data.
      */
     protected function dispatchFiltersUpdated(): void
     {

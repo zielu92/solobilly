@@ -36,6 +36,11 @@ class HolidayWidget extends Widget
         'filament.pageFilterUpdated' => 'handleFilterUpdated'
     ];
 
+    /**
+     * Initializes the widget state with the selected year and default country, then loads holiday data.
+     *
+     * Sets the year based on the 'startDate' filter if available, defaults to the current year otherwise, assigns 'Poland' as the default country, and populates the holidays list.
+     */
     public function mount()
     {
         // Safely access filters
@@ -45,11 +50,21 @@ class HolidayWidget extends Widget
         $this->loadHolidays();
     }
 
+    /**
+     * Reloads the list of holidays when the selected country changes.
+     */
     public function updatedCountry()
     {
         $this->loadHolidays();
     }
 
+    /**
+     * Updates the displayed holidays when page filters change.
+     *
+     * If the provided data includes a 'startDate', updates the year accordingly and reloads the holiday list.
+     *
+     * @param mixed $data Filter data, expected to be an array with an optional 'startDate' key.
+     */
     public function handleFilterUpdated($data)
     {
         if (is_array($data) && isset($data['startDate'])) {
@@ -58,6 +73,11 @@ class HolidayWidget extends Widget
         $this->loadHolidays();
     }
 
+    /**
+     * Loads and formats holidays for the selected country and year.
+     *
+     * Retrieves holidays using the Yasumi library, formats each with its name, date, and localized day of the week, and stores them in the holidays property. If an error occurs during retrieval, logs the error and clears the holidays list.
+     */
     public function loadHolidays()
     {
         try {

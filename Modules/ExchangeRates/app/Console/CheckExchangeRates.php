@@ -6,9 +6,9 @@ use App\Models\Currency;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Modules\ExchangeRates\Models\ExchangeRate;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use MaciejSz\Nbp\Service\CurrencyAverageRatesService;
+use Yasumi\Yasumi;
+
 class CheckExchangeRates extends Command
 {
     /**
@@ -71,19 +71,23 @@ class CheckExchangeRates extends Command
      */
     private function getLastWorkday()
     {
-        //todo: consider also a holidays...
-        $yesterday = Carbon::yesterday();
+        $date = Carbon::yesterday();
+        $year = $date->year;
 
-        // If yesterday was Saturday, get last Friday
-        if ($yesterday->isSaturday()) {
-            return $yesterday->subDays(1);
+        $holidays = Yasumi::create('Poland', $year);
+        $holidayDates = array_map(function ($holidayDate) {
+            return ($holidayDate instanceof \DateTimeInterface)
+                ? $holidayDate->format('Y-m-d')
+                : (string) $holidayDate;
+        }, $holidays->getHolidayDates());
+
+        while (
+            $date->isWeekend() ||
+            in_array($date->format('Y-m-d'), $holidayDates, true)
+        ) {
+            $date->subDay();
         }
 
-        // If yesterday was Sunday, get last Friday
-        if ($yesterday->isSunday()) {
-            return $yesterday->subDays(2);
-        }
-
-        return $yesterday;
+        return $date;
     }
 }

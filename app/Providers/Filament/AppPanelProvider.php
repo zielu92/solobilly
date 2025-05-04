@@ -7,7 +7,6 @@ use App\Filament\Resources\BuyerResource;
 use App\Filament\Resources\CostCategoryResource;
 use App\Filament\Resources\CostResource;
 use App\Filament\Resources\InvoiceResource;
-use App\Models\CostCategory;
 use Coolsam\Modules\ModulesPlugin;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationItem;
@@ -72,7 +71,7 @@ class AppPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder

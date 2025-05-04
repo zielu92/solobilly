@@ -62,12 +62,11 @@ class CheckExchangeRates extends Command
     }
 
     /**
-     * Returns the last workday date, adjusting for weekends.
+     * Determines the most recent workday before today, excluding weekends and Polish public holidays.
      *
-     * This method computes yesterday's date and, if it falls on Saturday or Sunday,
-     * adjusts the result to the preceding Friday. Note: Holidays are not considered.
+     * Calculates yesterday's date and iteratively subtracts days if the date falls on a weekend or matches a public holiday in Poland, ensuring the returned date is a valid workday.
      *
-     * @return \Carbon\Carbon The last workday date.
+     * @return \Carbon\Carbon The last valid workday date.
      */
     private function getLastWorkday()
     {

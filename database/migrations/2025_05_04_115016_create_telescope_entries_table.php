@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Get the migration connection name.
+     * Retrieves the database connection name configured for Telescope storage.
+     *
+     * @return string|null The connection name, or null if not set.
      */
     public function getConnection(): ?string
     {
@@ -15,7 +17,9 @@ return new class extends Migration
     }
 
     /**
-     * Run the migrations.
+     * Creates the database tables required for Laravel Telescope's data storage.
+     *
+     * Defines the schema for the `telescope_entries`, `telescope_entries_tags`, and `telescope_monitoring` tables, including columns, indexes, and foreign key constraints, using the configured database connection.
      */
     public function up(): void
     {
@@ -57,7 +61,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Drops the Telescope-related tables if they exist, reversing the migration.
      */
     public function down(): void
     {

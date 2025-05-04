@@ -30,7 +30,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3" class="text-center py-4 text-gray-500">{{ __('dashboard.country.holidays_not_found') }}</td>
+                    <td colspan="3" class="text-center py-4 text-gray-500">{{ __('dashboard.holidays_not_found') }}</td>
                 </tr>
             @endforelse
             </tbody>

@@ -6,10 +6,7 @@ use App\Models\Currency;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Modules\ExchangeRates\Models\ExchangeRate;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use MaciejSz\Nbp\Service\CurrencyAverageRatesService;
-use Yasumi\Filters\BankHolidaysFilter;
 use Yasumi\Yasumi;
 
 class CheckExchangeRates extends Command

@@ -26,7 +26,9 @@ class HolidayWidget extends Widget
         'France',
         'Italy',
         'Netherlands',
-        'Sweden'
+        'Sweden',
+        'Spain',
+        'Switzerland'
     ];
 
     protected static bool $isLazy = false;

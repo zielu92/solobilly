@@ -3,8 +3,16 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\InvoiceResource\Widgets\InvoicesWidget;
+use App\Filament\Pages\Backups;
+use App\Filament\Resources\BuyerResource;
+use App\Filament\Resources\CostCategoryResource;
+use App\Filament\Resources\CostResource;
+use App\Filament\Resources\InvoiceResource;
 use Coolsam\Modules\ModulesPlugin;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use App\Filament\Pages\Settings;
@@ -20,11 +28,21 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Modules\ExchangeRates\Filament\Resources\ExchangeRateResource;
+use Modules\Payments\Filament\Resources\PaymentMethodResource;
 use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AppPanelProvider extends PanelProvider
 {
+    /**
+     * Configures and returns the application's Filament panel with custom branding, navigation, resources, middleware, and plugins.
+     *
+     * Sets up the panel with global search, a custom brand name, primary color, authentication, and resource discovery. Defines a structured navigation menu with dashboard, invoices, costs, and settings groups. Registers middleware for session, authentication, and CSRF protection, enables a collapsible sidebar, and adds plugins for backups, modules, and settings management.
+     *
+     * @param Panel $panel The Filament panel instance to configure.
+     * @return Panel The configured Filament panel instance.
+     */
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -40,14 +58,39 @@ class AppPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class
             ])
-            ->navigationGroups([
-                NavigationGroup::make('Invoices')->icon('heroicon-o-document-currency-dollar'),
-                NavigationGroup::make('Costs')->icon('heroicon-o-fire'),
-                NavigationGroup::make('Payment Methods')->icon('heroicon-o-credit-card'),
-                NavigationGroup::make('Settings')->icon('heroicon-o-cog')
-            ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder
+                    ->items([
+                        NavigationItem::make('Dashboard')
+                            ->label(__('nav.dashboard'))
+                            ->icon('heroicon-o-home')
+                            ->url(fn(): string => Dashboard::getUrl()),
+                    ])->groups([
+                        NavigationGroup::make('Invoices')->icon('heroicon-o-document-currency-dollar')
+                            ->label(__('nav.invoices'))
+                            ->items([
+                                ...InvoiceResource::getNavigationItems(),
+                                ...BuyerResource::getNavigationItems()
+                            ]),
+                        NavigationGroup::make('Costs')->icon('heroicon-o-fire')
+                            ->label(__('nav.costs'))
+                            ->items([
+                                ...CostResource::getNavigationItems(),
+                                ...CostCategoryResource::getNavigationItems()
+                            ]),
+                        NavigationGroup::make('Settings')->icon('heroicon-o-cog')
+                            ->label(__('nav.settings'))
+                            ->collapsed()
+                            ->items([
+                                ...Settings::getNavigationItems(),
+                                ...Backups::getNavigationItems(),
+                                ...PaymentMethodResource::getNavigationItems(),
+                                ...ExchangeRateResource::getNavigationItems(),
+                            ]),
+                    ]);
+            })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 InvoicesWidget::class

@@ -1,3 +1,4 @@
 {
-    "Payments": true
+    "Payments": true,
+    "ExchangeRates": true
 }

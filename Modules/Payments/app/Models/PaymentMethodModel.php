@@ -24,18 +24,27 @@ class PaymentMethodModel extends Model
     {
         return [
             TextInput::make('name')
+                ->label(__('payments::payments.name'))
                 ->required()
                 ->maxLength(255),
             TextInput::make('description')
+                ->label(__('payments::payments.description'))
                 ->maxLength(255)
                 ->default(null),
             TextInput::make('url')
+                ->label(__('payments::payments.url'))
                 ->maxLength(255)
                 ->default(null),
             Select::make('method')
-                ->options(collect(PaymentMethodsManager::getPaymentMethods())->pluck('method', 'method_title'))
+                ->required()
+                ->options(
+                    collect(PaymentMethodsManager::getPaymentMethods())->mapWithKeys(function ($method) {
+                        return [$method['method'] => __('payments::payments.methods.'.strtolower($method['method_title']))];
+                    })
+                )
                 ->default(null),
             Toggle::make('active')
+                ->label(__('payments::payments.active'))
                 ->default(true),
         ];
     }

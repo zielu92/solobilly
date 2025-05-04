@@ -7,13 +7,16 @@ use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageTable;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use Illuminate\Contracts\Support\Htmlable;
 
 class CostsChartWidget extends ChartWidget
 {
     use InteractsWithPageTable;
 
-    protected static ?string $heading = 'Costs sum';
-
+    public function getHeading(): string | Htmlable | null
+    {
+        return __('costs.costs_sum');
+    }
     protected  int | string | array $columnSpan = 'full';
     protected static ?string $maxHeight = "200px";
     protected static ?string $pollingInterval = '1s';
@@ -23,9 +26,9 @@ class CostsChartWidget extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'week' => 'Last week',
-            'month' => 'this month',
-            '1Year' => 'This year'
+            'week' => __('costs.week'),
+            'month' => __('costs.month'),
+            '1Year' => __('costs.year')
         ];
     }
 

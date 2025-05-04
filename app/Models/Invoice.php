@@ -112,9 +112,9 @@ class Invoice extends Model
     {
         return [
             TextInput::make('no')
-                ->label('Invoice Number')
+                ->label(__('invoices.invoice_no'))
                 ->autocomplete(false)
-                ->columnSpan(3)
+                ->columnSpan(2)
                 ->required()
                 ->default(function ()  {
                     $defaultNumberFormat = setting('invoice.default_pattern');
@@ -146,27 +146,29 @@ class Invoice extends Model
                 }),
 
             Select::make('type')
-                ->label('Invoice Type')
-                ->columnSpan(2)
+                ->label(__('invoices.type'))
+                ->columnSpan(1)
                 ->options([
-                    'regular' => 'Final',
-                    'proforma' => 'Proforma',
+                    'regular' => __('invoices.types.regular'),
+                    'proforma' => __('invoices.types.proforma'),
+                    'draft' => __('invoices.types.draft'),
+                    'cancelled' => __('invoices.types.cancelled'),
                 ])
                 ->default('regular')
                 ->required(),
 
             Select::make('payment_status')
-                ->label('Payment Status')
+                ->label(__('invoices.payment_status'))
                 ->columnSpan(2)
                 ->options([
-                    'notpaid' => 'Pending Payment',
-                    'paid' => 'Paid',
+                    'paid' => __('invoices.paid'),
+                    'notpaid' => __('invoices.notpaid'),
                 ])
                 ->default('notpaid')
                 ->required(),
 
             Select::make('currency_id')
-                ->label('Currency')
+                ->label(__('invoices.currency'))
                 ->columnSpan(1)
                 ->live()
                 ->options(
@@ -188,6 +190,7 @@ class Invoice extends Model
                 }),
 
             Select::make('buyer_id')
+                ->label(__('invoices.buyer'))
                 ->hidden(function() use ($buyerId) {
                     return $buyerId !== null;
                 })
@@ -197,59 +200,59 @@ class Invoice extends Model
                 ->required(),
 
             Select::make('payment_method_id')
-                ->label('Payment Method')
+                ->label(__('invoices.payment_method'))
                 ->relationship('paymentMethod', 'name')
                 ->columnSpan(2)
                 ->required(),
 
             TextInput::make('place')
-                ->label('Place of Issue')
+                ->label(__('invoices.place_of_issue'))
                 ->columnSpan(2)
                 ->default(setting('invoice.default_place'))
                 ->nullable(),
 
             DatePicker::make('sale_date')
-                ->label('Sale Date')
+                ->label(__('invoices.sale_date'))
                 ->default(now())
                 ->columnSpan(2)
                 ->nullable(),
 
             DatePicker::make('issue_date')
-                ->label('Issue Date')
+                ->label(__('invoices.issue_date'))
                 ->default(now())
                 ->columnSpan(2)
                 ->required(),
 
             DatePicker::make('due_date')
-                ->label('Due Date')
+                ->label(__('invoices.due_date'))
                 ->default(now()->addDays(14))
                 ->columnSpan(2)
                 ->required(),
 
             TextInput::make('comment')
-                ->label('Comment')
+                ->label(__('invoices.comments'))
                 ->columnSpan(3)
                 ->nullable(),
 
             TextInput::make('issuer_name')
-                ->label('Issuer Name')
+                ->label(__('invoices.issuer_name'))
                 ->default(setting('invoice.default_issuer'))
-                ->columnSpan(3)
+                ->columnSpan(2)
                 ->nullable(),
 
             Repeater::make('items')
-                ->label('Invoice Items')
+                ->label(__('invoices.invoice_items'))
                 ->columnSpanFull()
                 ->reorderableWithButtons()
                 ->columns(12)
                 ->schema([
                     Textarea::make('name')
-                        ->label('Item Name')
+                        ->label(__('invoices.item_name'))
                         ->columnSpan(2)
                         ->required(),
 
                     TextInput::make('quantity')
-                        ->label('Quantity')
+                        ->label(__('invoices.quantity'))
                         ->columnSpan(1)
                         ->lazy()
                         ->debounce()
@@ -260,7 +263,7 @@ class Invoice extends Model
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
                     TextInput::make('price_net')
-                        ->label('Net Price')
+                        ->label(__('invoices.net_price'))
                         ->numeric()
                         ->lazy()
                         ->debounce()
@@ -272,7 +275,7 @@ class Invoice extends Model
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
                     Select::make('tax_rate')
-                        ->label('Tax Rate')
+                        ->label(__('invoices.tax_rate'))
                         ->columnSpan(1)
                         ->lazy()
                         ->debounce()
@@ -283,15 +286,15 @@ class Invoice extends Model
                             '8' => '8%',
                             '5' => '5%',
                             '0' => '0%',
-                            'zw' => 'Exempt',
-                            'np' => 'Not Applicable',
+                            'zw' => __('invoices.tax_rates.zw'),
+                            'np' => __('invoices.tax_rates.np'),
                         ])
                         ->required()
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateGrandTotals($set, $get))
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
                     TextInput::make('discount')
-                        ->label('Discount')
+                        ->label(__('invoices.discount'))
                         ->lazy()
                         ->debounce()
                         ->columnSpan(2)
@@ -302,42 +305,42 @@ class Invoice extends Model
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
                     TextInput::make('price_gross')
-                        ->label('Gross Price')
+                        ->label(__('invoices.gross_price'))
                         ->numeric()
                         ->columnSpan(2)
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->readOnly(),
 
-                        TextInput::make('tax_amount')
-                        ->label('Tax Amount')
+                    TextInput::make('tax_amount')
+                        ->label(__('invoices.tax_amount'))
                         ->columnSpan(2)
                         ->readOnly()
                             ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->numeric(),
 
                     TextInput::make('total_net')
-                        ->label('Total Net')
+                        ->label(__('invoices.total_net'))
                         ->columnSpan(3)
                         ->readOnly()
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->numeric(),
 
                     TextInput::make('total_gross')
-                        ->label('Total Gross')
+                        ->label(__('invoices.total_gross'))
                         ->columnSpan(3)
                         ->readOnly()
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->numeric(),
 
                     TextInput::make('total_tax')
-                        ->label('Total Tax')
+                        ->label(__('invoices.total_tax'))
                         ->columnSpan(3)
                         ->readOnly()
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->numeric(),
 
                     TextInput::make('total_discount')
-                        ->label('Total Discount')
+                        ->label(__('invoices.total_discount'))
                         ->columnSpan(3)
                         ->readOnly()
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
@@ -348,29 +351,29 @@ class Invoice extends Model
                 ->cloneable()
                 ->relationship('InvoiceItems')
                 ->required(),
-                Section::make("Grand total summary")
-                ->columns(12)
-                ->schema([
-                    Placeholder::make('grand_total_net')
-                        ->label('Grand Total Net')
-                        ->content(fn(Get $get) => number_format($get('grand_total_net') ?? 0, 2) . ' '.$get('currency_code'))
-                        ->columnSpan(3),
+                Section::make(__('invoices.grand_total_summary'))
+                    ->columns(12)
+                    ->schema([
+                        Placeholder::make('grand_total_net')
+                            ->label(__('invoices.grand_total_net'))
+                            ->content(fn(Get $get) => number_format($get('grand_total_net') ?? 0, 2) . ' '.$get('currency_code'))
+                            ->columnSpan(3),
 
-                    Placeholder::make('grand_total_tax')
-                        ->label('Grand Total Tax')
-                        ->content(fn(Get $get) => number_format($get('grand_total_tax') ?? 0, 2) . ' '.$get('currency_code'))
-                        ->columnSpan(3),
+                        Placeholder::make('grand_total_tax')
+                            ->label(__('invoices.grand_total_tax'))
+                            ->content(fn(Get $get) => number_format($get('grand_total_tax') ?? 0, 2) . ' '.$get('currency_code'))
+                            ->columnSpan(3),
 
-                    Placeholder::make('grand_total_gross')
-                        ->label('Grand Total Gross')
-                        ->content(fn(Get $get) => number_format($get('grand_total_gross') ?? 0, 2) . ' '.$get('currency_code'))
-                        ->columnSpan(3),
+                        Placeholder::make('grand_total_gross')
+                            ->label(__('invoices.grand_total_gross'))
+                            ->content(fn(Get $get) => number_format($get('grand_total_gross') ?? 0, 2) . ' '.$get('currency_code'))
+                            ->columnSpan(3),
 
-                    Placeholder::make('grand_total_discount')
-                        ->label('Grand Total Discount')
-                        ->content(fn(Get $get) => number_format($get('grand_total_discount') ?? 0, 2) . ' '.$get('currency_code'))
-                        ->columnSpan(3),
-                ]),
+                        Placeholder::make('grand_total_discount')
+                            ->label(__('invoices.grand_total_discount'))
+                            ->content(fn(Get $get) => number_format($get('grand_total_discount') ?? 0, 2) . ' '.$get('currency_code'))
+                            ->columnSpan(3),
+                    ]),
             ];
     }
 

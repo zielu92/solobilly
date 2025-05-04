@@ -6,20 +6,29 @@ use App\Models\Currency;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Invoice;
-use Filament\Forms\Get;
-use App\Models\InvoiceItem;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\InvoiceResource\Pages;
 use Illuminate\Support\Facades\URL;
 
 class InvoiceResource extends Resource
 {
     protected static ?string $model = Invoice::class;
-    protected static ?string $navigationGroup = 'Invoices';
-    protected static ?string $navigationLabel = 'Invoices';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('invoices.invoices');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('invoices.invoices');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('invoices.invoices');
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -37,20 +46,21 @@ class InvoiceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('no')
-                    ->label('Invoice No.')
+                    ->label(__('invoices.invoice_no'))
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('invoiceBuyer.name')
-                    ->label('Buyer'),
+                    ->label(__('invoices.buyer')),
 
                 Tables\Columns\TextColumn::make('type')
-                    ->label('Type')
+                    ->label(__('invoices.type'))
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => __('invoices.types.' . $state))
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('payment_status')
-                    ->label('Payment Status')
+                    ->label(__('invoices.payment_status'))
                     ->alignCenter()
                     ->color(function($state){
                         return $state=="paid" ? 'success' : 'danger';
@@ -60,7 +70,7 @@ class InvoiceResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('grand_total_gross')
-                    ->label('Grand Total Gross')
+                    ->label(__('invoices.grand_total_gross'))
                     ->alignEnd()
                     ->numeric()
                     ->suffix(function($record) {
@@ -68,22 +78,23 @@ class InvoiceResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created')
+                    ->label(__('invoices.created'))
                     ->dateTime()
                     ->sortable(),
             ])
             ->actions([
                 Action::make('Download PDF')
                     ->icon('heroicon-o-document-text')
-                    ->label('Download')
+                    ->label(__('invoices.download'))
                     ->url(fn ($record) => URL::route('invoices.show', $record->id))
                     ->openUrlInNewTab(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payment_status')
+                    ->label(__('invoices.payment_status'))
                     ->options([
-                        'paid' => 'Paid',
-                        'notpaid' => 'Not paid',
+                        'paid' => __('invoices.paid'),
+                        'notpaid' => __('invoices.notpaid'),
                     ]),
             ]);
     }

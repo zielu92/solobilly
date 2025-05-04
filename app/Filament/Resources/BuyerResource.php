@@ -17,7 +17,20 @@ class BuyerResource extends Resource
 {
     protected static ?string $model = Buyer::class;
 
-    protected static ?string $navigationGroup = 'Invoices';
+    public static function getNavigationLabel(): string
+    {
+        return __('buyers.buyers');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('buyers.buyer');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('buyers.buyers');
+    }
     protected static ?string $recordTitleAttribute = 'company_name';
     public static function form(Form $form): Form
     {
@@ -30,14 +43,19 @@ class BuyerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('buyers.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('company_name')
+                    ->label(__('buyers.company_name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
+                    ->label(__('buyers.email'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label(__('buyers.phone'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nip')
+                    ->label(__('buyers.tax_id'))
                     ->searchable(),
             ])
             ->filters([

@@ -7,12 +7,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "azuyalabs/yasumi": "^2.7",
+        "bezhansalleh/filament-language-switch": "^3.1",
         "coolsam/modules": "^4",
         "filament/actions": "^3.2",
         "filament/filament": "^3.2",
         "flowframe/laravel-trend": "^0.4.0",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "maciej-sz/nbp-php": "^2.1",
         "nwidart/laravel-modules": "^v11.1.10",
         "outerweb/filament-settings": "^1.2",
         "shuvroroy/filament-spatie-laravel-backup": "^2.2",
@@ -27,7 +30,7 @@
         "laravel/telescope": "^5.5",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1"
+        "pestphp/pest": "^3.7"
     },
     "autoload": {
         "psr-4": {

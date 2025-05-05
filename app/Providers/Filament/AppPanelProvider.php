@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\CostResource\Widgets\CostsWidget;
 use App\Filament\Resources\InvoiceResource\Widgets\InvoicesWidget;
 use App\Filament\Pages\Backups;
 use App\Filament\Resources\BuyerResource;
@@ -93,7 +94,7 @@ class AppPanelProvider extends PanelProvider
             })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                InvoicesWidget::class
+                InvoicesWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

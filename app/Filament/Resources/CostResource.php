@@ -6,8 +6,11 @@ use App\Filament\Resources\CostResource\Pages;
 use App\Filament\Resources\CostResource\RelationManagers;
 use App\Filament\Resources\CostResource\Widgets\CostsChartWidget;
 use App\Models\Cost;
+use App\Models\Currency;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -40,10 +43,29 @@ class CostResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label(__('costs.name'))
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('amount')
                     ->label(__('costs.amount'))
                     ->required()
+                    ->live()
+                    ->numeric()
+                    ->afterStateUpdated(fn($state, callable $set, callable $get) =>
+                    $set('amount_gross', is_numeric($get('amount')) ? $get('amount')*1.23 : 0)
+                    ),
+                Select::make('currency_id')
+                    ->label(__('invoices.currency'))
+                    ->columnSpan(1)
+                    ->live()
+                    ->options(
+                        Currency::whereIn('id', setting('general.currencies'))->get()->pluck('code', 'id')
+                    )
+                    ->default(Currency::find(setting('general.default_currency'))->id)
+                    ->required(),
+                Forms\Components\TextInput::make('amount_gross')
+                    ->label(__('costs.amount_gross'))
+                    ->required()
+                    ->live()
                     ->numeric(),
                 Forms\Components\Textarea::make('description')
                     ->label(__('costs.description'))
@@ -92,7 +114,8 @@ class CostResource extends Resource
                 Forms\Components\DatePicker::make('invoice_due_date')
                     ->label(__('costs.invoice_due'))
                     ->visible(fn (callable $get) => !$get('is_category_tax_related')),
-                Forms\Components\DatePicker::make('payment_date'),
+                Forms\Components\DatePicker::make('payment_date')
+                    ->label(__('costs.payment_date')),
 
             ]);
     }
@@ -106,6 +129,10 @@ class CostResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('amount')
                     ->label(__('costs.amount'))
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('amount_gross')
+                    ->label(__('costs.amount_gross'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('category.name')

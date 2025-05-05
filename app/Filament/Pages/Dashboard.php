@@ -4,6 +4,8 @@ namespace App\Filament\Pages;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -47,8 +49,36 @@ class Dashboard extends BaseDashboard
                             ->afterStateUpdated(function () {
                                 $this->dispatchFiltersUpdated();
                             }),
+                        ToggleButtons::make('type')
+                            ->label(__('dashboard.type'))
+                            ->inline()
+                            ->grouped()
+                            ->options([
+                                'gross' => __('dashboard.gross'),
+                                'net'   => __('dashboard.net'),
+                            ])
+                            ->default('net')
+                            ->afterStateUpdated(function () {
+                                $this->dispatchFiltersUpdated();
+                            }),
+                        ToggleButtons::make('status')
+                            ->label(__('dashboard.status'))
+                            ->inline()
+                            ->grouped()
+                            ->colors([
+                                'paid' => 'success',
+                                'not_paid' => 'danger',
+                            ])
+                            ->options([
+                                'paid' => __('dashboard.paid'),
+                                'not_paid'   => __('dashboard.not_paid'),
+                            ])
+                            ->default('paid')
+                            ->afterStateUpdated(function () {
+                                $this->dispatchFiltersUpdated();
+                            }),
                     ])
-                    ->columns(2),
+                    ->columns(4),
             ]);
     }
 

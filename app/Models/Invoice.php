@@ -162,9 +162,9 @@ class Invoice extends Model
                 ->columnSpan(2)
                 ->options([
                     'paid' => __('invoices.paid'),
-                    'notpaid' => __('invoices.notpaid'),
+                    'not_paid' => __('invoices.notpaid'),
                 ])
-                ->default('notpaid')
+                ->default('not_paid')
                 ->required(),
 
             Select::make('currency_id')

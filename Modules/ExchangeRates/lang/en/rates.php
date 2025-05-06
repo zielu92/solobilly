@@ -10,5 +10,7 @@ return [
     'base_currency' => 'Base currency',
     'source' => 'Source',
     'fetch' => 'Fetch latest rates',
-    'notification_fetch' => 'Start fetching rates from the latest working day'
+    'notification_fetch' => 'Start fetching rates from the latest working day',
+    'date_from' => 'Date from',
+    'date_to' => 'Date to',
 ];

@@ -76,7 +76,7 @@ class ExchangeRateResource extends Resource
                     ->label(__('exchangerates::rates.value'))
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('currency')
+                Forms\Components\Select::make('currency_id')
                     ->label(__('exchangerates::rates.currency'))
                     ->options(function (callable $get) {
                         // Get all currencies
@@ -99,7 +99,7 @@ class ExchangeRateResource extends Resource
                         }
                     }),
 
-                Forms\Components\Select::make('base_currency')
+                Forms\Components\Select::make('base_currency_id')
                     ->label(__('exchangerates::rates.base_currency'))
                     ->options(function (callable $get) {
                         // Get all currencies
@@ -152,11 +152,11 @@ class ExchangeRateResource extends Resource
                     ->label(__('exchangerates::rates.value'))
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('currency')
+                Tables\Columns\TextColumn::make('currency.code')
                     ->label(__('exchangerates::rates.currency'))
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('base_currency')
+                Tables\Columns\TextColumn::make('baseCurrency.code')
                     ->label(__('exchangerates::rates.base_currency'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('source')
@@ -164,7 +164,24 @@ class ExchangeRateResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('currency_id')
+                    ->options(fn() => Currency::pluck('code', 'id')->toArray())
+                    ->label(__('exchangerates::rates.currency')),
+                Tables\Filters\SelectFilter::make('base_currency_id')
+                    ->options(fn() => Currency::pluck('code', 'id')->toArray())
+                    ->label(__('exchangerates::rates.base_currency')),
+                Tables\Filters\Filter::make('date')
+                    ->form([
+                        Forms\Components\DatePicker::make('date_from')
+                        ->label(__('exchangerates::rates.date_from')),
+                        Forms\Components\DatePicker::make('date_to')
+                        ->label(__('exchangerates::rates.date_to')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['date_from'], fn(Builder $query, $date) => $query->whereDate('date', '>=', $date))
+                            ->when($data['date_to'], fn(Builder $query, $date) => $query->whereDate('date', '<=', $date));
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

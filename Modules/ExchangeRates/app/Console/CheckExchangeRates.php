@@ -45,8 +45,8 @@ class CheckExchangeRates extends Command
                         ->getRate($currency->code);
                     ExchangeRate::updateOrCreate([
                         'type'          => 'Auto',
-                        'currency'      => $currency->code,
-                        'base_currency' => 'PLN',
+                        'currency_id'      => Currency::whereCode($currency->code)->first()->id,
+                        'base_currency_id' => Currency::whereCode('PLN')->first()->id,
                         'date'          => $rateDate,
                     ],[
                         'value'         => $rate->getValue(),

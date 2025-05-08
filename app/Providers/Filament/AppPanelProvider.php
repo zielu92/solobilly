@@ -3,31 +3,32 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Backups;
+use App\Filament\Pages\Settings;
 use App\Filament\Resources\BuyerResource;
 use App\Filament\Resources\CostCategoryResource;
 use App\Filament\Resources\CostResource;
 use App\Filament\Resources\InvoiceResource;
+use App\Filament\Widgets\InvoiceCostsStatWidget;
 use Coolsam\Modules\ModulesPlugin;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use App\Filament\Pages\Settings;
 use Filament\Support\Colors\Color;
-use Filament\Navigation\NavigationGroup;
-use Filament\Http\Middleware\Authenticate;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Filament\Http\Middleware\AuthenticateSession;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\ExchangeRates\Filament\Resources\ExchangeRateResource;
+use Modules\ExchangeRates\Filament\Widgets\ExchangeRatesWidget;
 use Modules\Payments\Filament\Resources\PaymentMethodResource;
 use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
@@ -41,6 +42,7 @@ class AppPanelProvider extends PanelProvider
      *
      * @param Panel $panel The Filament panel instance to configure.
      * @return Panel The configured Filament panel instance.
+     * @throws \Exception
      */
     public function panel(Panel $panel): Panel
     {
@@ -92,7 +94,8 @@ class AppPanelProvider extends PanelProvider
             })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-
+                InvoiceCostsStatWidget::class,
+                ExchangeRatesWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

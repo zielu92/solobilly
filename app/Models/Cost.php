@@ -19,6 +19,8 @@ class Cost extends Model
     protected $fillable = [
         'name',
         'amount',
+        'currency_id',
+        'amount_gross',
         'description',
         'date',
         'category_id',
@@ -39,6 +41,7 @@ class Cost extends Model
     protected $casts = [
         'id' => 'integer',
         'amount' => 'decimal:2',
+        'amount_gross' => 'decimal:2',
         'date' => 'date',
         'category_id' => 'integer',
         'invoice_date' => 'date',
@@ -55,5 +58,10 @@ class Cost extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
     }
 }

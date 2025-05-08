@@ -4,6 +4,7 @@ namespace Modules\ExchangeRates\Console;
 
 use App\Models\Currency;
 use Carbon\Carbon;
+use Date;
 use Illuminate\Console\Command;
 use Modules\ExchangeRates\Models\ExchangeRate;
 use MaciejSz\Nbp\Service\CurrencyAverageRatesService;
@@ -32,32 +33,39 @@ class CheckExchangeRates extends Command
     {
         //NBP only for PLN
         if(Currency::select('code')->find(setting('general.default_currency'))->code=='PLN') {
-            $rateDate = $this->getLastWorkday()->format('Y-m-d');
-            $this->info('NBP averages rates for '.$rateDate);
+            $endDate = Carbon::now()->startOfDay();
+            $startDate = Carbon::now()->subDays(7);
             $currencyAverages = CurrencyAverageRatesService::new();
-            $currencies = Currency::select('code')->whereIn('id', setting('general.currencies'))->get();
+            $currencies = Currency::select('code', 'id')
+                ->whereNot('code', '=','PLN')
+                ->whereIn('id', setting('general.currencies'))->get();
             $plnCurrency = Currency::whereCode('PLN')->firstOrFail();
             foreach ($currencies as $currency) {
-                if($currency->code=='PLN') continue;
-                try {
-                    $rate = $currencyAverages
-                        ->fromDay($rateDate)
-                        ->fromTable('A')
-                        ->getRate($currency->code);
-                    ExchangeRate::updateOrCreate([
-                        'type'          => 'Auto',
-                        'currency_id'      => $currency->id,
-                        'base_currency_id' => $plnCurrency->id,
-                        'date'          => $rateDate,
-                    ],[
-                        'value'         => $rate->getValue(),
-                        'source'        => 'NBP'
-                    ]);
-                    $this->info($rate->getValue(). ' '.$currency->code.'/PLN');
-                } catch (\Exception $e) {
-                    $this->error("cannot fetch rates for ".$currency->code);
-                }
+                $dateIterator = clone $startDate;
+                for(; $dateIterator <= $endDate; $dateIterator->addDay()) {
+                    $iDate = $dateIterator->format('Y-m-d');
+                    $this->info(sprintf('NBP averages rates for %s', $iDate));
+                    try {
+                        $rate = $currencyAverages
+                            ->fromDay($iDate)
+                            ->fromTable('A')
+                            ->getRate($currency->code);
 
+                        ExchangeRate::updateOrCreate([
+                            'type' => 'Auto',
+                            'currency_id' => $currency->id,
+                            'base_currency_id' => $plnCurrency->id,
+                            'date' => $iDate,
+                        ], [
+                            'value' => $rate->getValue(),
+                            'source' => 'NBP'
+                        ]);
+                        $this->info(sprintf("%f %s/PLN", $rate->getValue(), $currency->code));
+                    } catch (\Exception $e) {
+                        $this->error($e->getMessage());
+                        $this->error(sprintf("cannot fetch rates for %s, for date %s", $currency->code, $iDate));
+                    }
+                }
             }
         }
     }

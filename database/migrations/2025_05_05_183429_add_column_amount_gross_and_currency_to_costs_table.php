@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('costs', function (Blueprint $table) {
-            $table->decimal('amount_gross', 10, 2);
+            $table->decimal('amount_gross', 10, 2)->default(0);
             $table->foreignId('currency_id')->nullable()->constrained('currencies');
         });
     }

@@ -93,7 +93,7 @@ class InvoiceCostsStatWidget extends BaseWidget
         ];
     }
 
-    private function convertToDefaultCurrency($amount, $currencyId, $createdAt)
+    private function convertToDefaultCurrency($amount, $currencyId, $createdAt): float|int
     {
         $defaultCurrencyId = setting('general.default_currency');
 
@@ -101,7 +101,9 @@ class InvoiceCostsStatWidget extends BaseWidget
             return $amount;
         }
 
-        $exchangeRate = ExchangeRate::where('currency', $currencyId)
+        $defaultCurrencyId = setting('general.default_currency');
+        $exchangeRate = ExchangeRate::where('currency_id', $currencyId)
+            ->where('base_currency_id', $defaultCurrencyId)
             ->whereDate('date', '<=', Carbon::parse($createdAt)->startOfDay())
             ->orderBy('date', 'desc')
             ->first();

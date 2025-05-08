@@ -36,6 +36,7 @@ class CheckExchangeRates extends Command
             $this->info('NBP averages rates for '.$rateDate);
             $currencyAverages = CurrencyAverageRatesService::new();
             $currencies = Currency::select('code')->whereIn('id', setting('general.currencies'))->get();
+            $plnCurrency = Currency::whereCode('PLN')->firstOrFail();
             foreach ($currencies as $currency) {
                 if($currency->code=='PLN') continue;
                 try {
@@ -45,8 +46,8 @@ class CheckExchangeRates extends Command
                         ->getRate($currency->code);
                     ExchangeRate::updateOrCreate([
                         'type'          => 'Auto',
-                        'currency_id'      => Currency::whereCode($currency->code)->first()->id,
-                        'base_currency_id' => Currency::whereCode('PLN')->first()->id,
+                        'currency_id'      => $currency->id,
+                        'base_currency_id' => $plnCurrency->id,
                         'date'          => $rateDate,
                     ],[
                         'value'         => $rate->getValue(),

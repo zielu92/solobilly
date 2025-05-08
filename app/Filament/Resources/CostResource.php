@@ -58,7 +58,8 @@ class CostResource extends Resource
                     ->columnSpan(1)
                     ->live()
                     ->options(
-                        Currency::whereIn('id', setting('general.currencies'))->get()->pluck('code', 'id')
+                        Currency::whereIn('id', (array) setting('general.currencies', []))
+                            ->pluck('code', 'id')
                     )
                     ->default(Currency::find(setting('general.default_currency'))->id)
                     ->required(),

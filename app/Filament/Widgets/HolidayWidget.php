@@ -15,7 +15,7 @@ class HolidayWidget extends Widget
     protected static ?int $sort = 3;
     protected static string $view = 'filament.widgets.holiday-widget';
 
-    public $year;
+    private $year;
     public $country;
     public $holidays = [];
     public $countries = [

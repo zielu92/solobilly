@@ -50,16 +50,15 @@ class ExchangeRatesWidget extends BaseWidget
                 ->label(__('exchangerates::rates.base_currency')),
         ];
     }
-//
+
     protected function getTableFilters(): array
     {
-        //todo: only which we selected in sys
         return [
             SelectFilter::make('currency_id')
-                ->options(fn() => Currency::pluck('code', 'id')->toArray())
+                ->options(fn() => Currency::whereIn('id', setting('general.currencies'))->pluck('code', 'id')->toArray())
                 ->label(__('exchangerates::rates.currency')),
             SelectFilter::make('base_currency_id')
-                ->options(fn() => Currency::pluck('code', 'id')->toArray())
+                ->options(fn() => Currency::whereIn('id', setting('general.currencies'))->pluck('code', 'id')->toArray())
                 ->label(__('exchangerates::rates.base_currency')),
         ];
     }

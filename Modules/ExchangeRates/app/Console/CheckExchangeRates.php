@@ -37,8 +37,7 @@ class CheckExchangeRates extends Command
             $startDate = Carbon::now()->subDays(7);
             $currencyAverages = CurrencyAverageRatesService::new();
             $currencies = Currency::select('code', 'id')
--                ->whereNot('code', '=','PLN')
-+                ->where('code', '!=', 'PLN')
+                ->where('code', '!=', 'PLN')
                 ->whereIn('id', setting('general.currencies'))
                 ->get();
             $plnCurrency = Currency::whereCode('PLN')->firstOrFail();

@@ -8,6 +8,7 @@ use App\Filament\Resources\BuyerResource;
 use App\Filament\Resources\CostCategoryResource;
 use App\Filament\Resources\CostResource;
 use App\Filament\Resources\InvoiceResource;
+use App\Filament\Resources\WorkLogResource;
 use App\Filament\Widgets\InvoiceCostsStatWidget;
 use Coolsam\Modules\ModulesPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -73,7 +74,8 @@ class AppPanelProvider extends PanelProvider
                             ->label(__('nav.invoices'))
                             ->items([
                                 ...InvoiceResource::getNavigationItems(),
-                                ...BuyerResource::getNavigationItems()
+                                ...BuyerResource::getNavigationItems(),
+                                ...WorkLogResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('Costs')->icon('heroicon-o-fire')
                             ->label(__('nav.costs'))

@@ -13,5 +13,14 @@ return [
     'postal_code'   => 'Postal Code',
     'country'       => 'Country',
     'regon'         => 'Regon',
-    'krs'           => 'KRS'
+    'krs'           => 'KRS',
+    'contract_type' => 'Contract Type',
+    'contract_rate' => 'Contract Rate',
+    'type'          => [
+        'hourly'    => 'hourly',
+        'daily'      => 'daily',
+        'weekly'     => 'weekly',
+        'monthly'    => 'monthly',
+        'other'      => 'other',
+    ]
 ];

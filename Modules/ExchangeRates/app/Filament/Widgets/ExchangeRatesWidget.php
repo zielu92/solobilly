@@ -6,11 +6,9 @@ use App\Models\Currency;
 use App\Traits\FilterTrait;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\ExchangeRates\Models\ExchangeRate;
@@ -19,6 +17,7 @@ class ExchangeRatesWidget extends BaseWidget
 {
     use InteractsWithPageFilters, FilterTrait;
 
+    protected static ?int $sort = 1;
    protected function getTableHeading(): string|Htmlable|null
    {
        return  __('exchangerates::rates.exchange_rates');

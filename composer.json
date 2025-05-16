@@ -13,12 +13,14 @@
         "filament/actions": "^3.2",
         "filament/filament": "^3.2",
         "flowframe/laravel-trend": "^0.4.0",
+        "guava/calendar": "^1.13",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
         "maciej-sz/nbp-php": "^2.1",
         "nwidart/laravel-modules": "^v11.1.10",
         "outerweb/filament-settings": "^1.2",
         "shuvroroy/filament-spatie-laravel-backup": "^2.2",
+        "spatie/laravel-data": "^4.15",
         "spatie/laravel-pdf": "^1.5"
     },
     "require-dev": {

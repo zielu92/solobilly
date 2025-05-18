@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
+Schema::disableForeignKeyConstraints();
 
-        Schema::create('work_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('buyer_id')->constrained();
-            $table->dateTime('start');
-            $table->dateTime('end');
-            $table->string('description');
-            $table->timestamps();
-        });
+Schema::create('work_logs', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('buyer_id')->constrained();
+    $table->dateTime('start');
+    $table->dateTime('end');
+    $table->string('description');
+    $table->timestamps();
+    $table->index('start');
+    $table->index('end');
+});
 
-        Schema::enableForeignKeyConstraints();
+Schema::enableForeignKeyConstraints();
     }
 
     /**

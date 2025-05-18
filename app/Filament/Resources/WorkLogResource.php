@@ -13,7 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 
 class WorkLogResource extends Resource
 {
@@ -151,39 +151,6 @@ class WorkLogResource extends Resource
                 ]),
             ]);
     }
-
-    public function create(array $data = []): Model
-    {
-
-        // Extract the items from the data
-        $items = $data['items'] ?? [];
-
-        // Remove items from data to avoid saving them directly to the main record
-        unset($data['items']);
-
-        $createdLogs = [];
-
-        if (empty($items)) {
-            $worklog = new WorkLog();
-            $worklog->fill($data);
-            $worklog->save();
-
-            $createdLogs[] = $worklog;
-        } else {
-            foreach ($items as $item) {
-                $worklog = new WorkLog();
-                $worklog->fill($data);
-                $worklog->start = $item['start'];
-                $worklog->end = $item['end'];
-                $worklog->save();
-
-                $createdLogs[] = $worklog;
-            }
-        }
-        // Return the first created worklog as the "main" one
-        return $createdLogs[0];
-    }
-
 
     public static function getPages(): array
     {

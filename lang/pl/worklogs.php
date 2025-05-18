@@ -11,5 +11,7 @@ return [
     'duration'    => 'Długość',
     'end_after_start' => 'Koniec nie może być przed rozpoczęciem',
     'worklogs_has_been_created' => 'wpisy zostały dodane',
-    'today'       => 'dzisiaj'
+    'today'       => 'dzisiaj',
+    'error'       => 'Błąd',
+    'create_failed' => 'Nie można było dodać wpisu do dziennika pracy. Proszę spróbować później.',
 ];

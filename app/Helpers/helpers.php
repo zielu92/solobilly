@@ -27,13 +27,13 @@ if(!function_exists('randomColorPart')) {
     }
 }
 
-if(!function_exists('textColorContrast')) {
+if (!function_exists('textColorContrast')) {
     function textColorContrast($hex){
         list($red, $green, $blue) = sscanf($hex, "#%02x%02x%02x");
-        $luma = ($red + $green + $blue)/3;
+        $luma = (0.299 * $red + 0.587 * $green + 0.114 * $blue);
 
         if ($luma < 128){
-            return  "white";
+            return "white";
         }
 
         return "black";

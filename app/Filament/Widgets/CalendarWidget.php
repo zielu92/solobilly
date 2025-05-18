@@ -2,73 +2,63 @@
 
 namespace App\Filament\Widgets;
 
-
-use App\Models\Buyer;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
+use App\Models\WorkLog;
+use App\Traits\FilterTrait;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Guava\Calendar\ValueObjects\CalendarEvent;
 use Guava\Calendar\Widgets\CalendarWidget as CalendarWidgetBase;
 use Illuminate\Database\Eloquent\Collection;
-use Log;
+use Illuminate\Support\HtmlString;
 
 class CalendarWidget extends CalendarWidgetBase
 {
+    use InteractsWithPageFilters, FilterTrait;
+
     protected static ?int $sort = 0;
+
+    protected $listeners = [
+        'filament.pageFilterUpdated' => 'handleFilterUpdated'
+    ];
+
+    public function getHeading(): string|HtmlString
+    {
+        return __("worklogs.worklog");
+    }
+
     public function getOptions(): array
     {
         return [
             'nowIndicator' => true,
-            'slotDuration' => '00:15:00'
+            'buttonText' => [
+                "today"=> __('worklogs.today'),
+            ]
         ];
     }
 
-    protected bool $dateSelectEnabled = true;
+    public function handleFilterUpdated($data)
+    {
+        $this->refreshRecords();
+    }
+
     public function getEvents(array $fetchInfo = []): Collection | array
     {
+        $startDate = $this->startDate();
+        $endDate = $this->endDate();
 
-        return [
-            // Chainable object-oriented variant
-            CalendarEvent::make()
-                ->title('My first event')
-                ->start(today())
-                ->end(today()),
-
-            // Array variant
-            ['title' => 'My second event', 'start' => today()->addDays(3), 'end' => today()->addDays(3)],
-
-            // Eloquent model implementing the `Eventable` interface
-//            MyEvent::find(1),
-        ];
-    }
-
-    public function form(Form $form): Form
-    {
-
-        return $form
-            ->schema([
-                Select::make('company_id')
-                    ->label('Company')
-                    ->options(Buyer::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
-                DateTimePicker::make('start_time')
-                    ->label('Start Time')
-                    ->required(),
-                DateTimePicker::make('end_time')
-                    ->label('End Time')
-                    ->required(),
-            ]);
-    }
-
-    public function submit()
-    {
-        $data = $this->form->getState();
-
-        // Save the event to the database or perform necessary actions
-
-        // Optionally, add the event to the calendar
-        $this->dispatch('refreshCalendar');
+        return WorkLog::with('buyer')
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start', [$startDate, $endDate])
+                    ->orWhereBetween('end', [$startDate, $endDate]);
+            })
+            ->get()
+            ->map(function (WorkLog $workLog) {
+                return CalendarEvent::make()
+                    ->title(sprintf('%s (%s h)', $workLog->buyer->name, $workLog->duration))
+                    ->start($workLog->start)
+                    ->end($workLog->end)
+                    ->backgroundColor($workLog->buyer->color)
+                    ->textColor(textColorContrast($workLog->buyer->color));
+            })->toArray();
     }
 
 }

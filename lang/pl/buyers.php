@@ -16,6 +16,7 @@ return [
     'krs'           => 'KRS',
     'contract_type' => 'Typ rozliczenia',
     'contract_rate' => 'Stawka rozliczenia',
+    'color'         => 'Domyślny kolor w statystykach',
     'type'          => [
         'hourly'    => 'godzinowo',
         'daily'     => 'dziennie',

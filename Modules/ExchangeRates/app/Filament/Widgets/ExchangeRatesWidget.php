@@ -28,7 +28,7 @@ class ExchangeRatesWidget extends BaseWidget
         $startDate = $this->startDate();
         $endDate = $this->endDate();
 
-        return ExchangeRate::query()->whereBetween('date', [$startDate, $endDate]);
+        return ExchangeRate::query()->whereBetween('date', [$startDate, $endDate])->orderByDesc('date');
     }
 
     protected function getTableColumns(): array
@@ -36,12 +36,11 @@ class ExchangeRatesWidget extends BaseWidget
         return [
             TextColumn::make('date')
                 ->label(__('exchangerates::rates.date'))
-                ->date()
-                ->sortable(),
+                ->date(),
             TextColumn::make('value')
                 ->label(__('exchangerates::rates.value'))
-                ->numeric()
-                ->sortable(),
+                ->alignRight()
+                ->numeric(),
             TextColumn::make('currency.code')
                 ->label(__('exchangerates::rates.currency'))
                 ->sortable(),

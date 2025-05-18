@@ -37,10 +37,6 @@ class InvoiceResource extends Resource
             ->schema(Invoice::getForm());
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table

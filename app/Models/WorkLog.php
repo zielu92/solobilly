@@ -38,4 +38,16 @@ class WorkLog extends Model
     {
         return $this->belongsTo(Buyer::class);
     }
+
+    /**
+     * Calculate the total duration in hours.
+     */
+    public function getDurationAttribute(): string
+    {
+        if (!$this->start || !$this->end) {
+            return 0;
+        }
+
+        return number_format($this->start->diffInSeconds($this->end) / 3600, 2, '.', '');
+    }
 }

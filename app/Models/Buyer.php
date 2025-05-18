@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\TypeOfContract;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,8 @@ class Buyer extends Model
         'regon',
         'krs',
         'contract_type',
-        'contract_rate'
+        'contract_rate',
+        'color'
     ];
 
     /**
@@ -93,6 +95,9 @@ class Buyer extends Model
                 ->label(__('buyers.krs'))
                 ->maxLength(255)
                 ->default(null),
+            ColorPicker::make('color')
+                ->label(__('buyers.color'))
+                ->default(randomColorHex()),
             Select::make('contract_type')
                 ->label(__('buyers.contract_type'))
                 ->options(TypeOfContract::class)

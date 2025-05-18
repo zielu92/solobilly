@@ -22,10 +22,10 @@ class WorkLogFactory extends Factory
     public function definition(): array
     {
         return [
-            'buyer_id' => Buyer::factory(),
-            'start' => fake()->dateTime(),
-            'end' => fake()->dateTime(),
-            'description' => fake()->text(),
+            'buyer_id'   => Buyer::factory(),
+            'start'      => fake()->dateTime(),
+            'end'        => fake()->dateTimeBetween('+1 hour', '+1 week'),
+            'description'=> fake()->text(),
         ];
     }
 }

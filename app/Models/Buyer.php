@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enum\TypeOfContract;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,6 +32,9 @@ class Buyer extends Model
         'nip',
         'regon',
         'krs',
+        'contract_type',
+        'contract_rate',
+        'color'
     ];
 
     /**
@@ -88,6 +95,19 @@ class Buyer extends Model
                 ->label(__('buyers.krs'))
                 ->maxLength(255)
                 ->default(null),
+            ColorPicker::make('color')
+                ->label(__('buyers.color'))
+                ->default(randomColorHex()),
+            Select::make('contract_type')
+                ->label(__('buyers.contract_type'))
+                ->options(TypeOfContract::class)
+                ->live(),
+            TextInput::make('contract_rate')
+                ->label(__('buyers.contract_rate'))
+                ->numeric()
+                ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER->value || $get('contract_type')==null)
+                ->default(null),
+
         ];
     }
 }

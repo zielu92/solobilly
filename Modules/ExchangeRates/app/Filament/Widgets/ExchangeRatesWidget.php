@@ -6,11 +6,9 @@ use App\Models\Currency;
 use App\Traits\FilterTrait;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Modules\ExchangeRates\Models\ExchangeRate;
@@ -19,6 +17,7 @@ class ExchangeRatesWidget extends BaseWidget
 {
     use InteractsWithPageFilters, FilterTrait;
 
+    protected static ?int $sort = 1;
    protected function getTableHeading(): string|Htmlable|null
    {
        return  __('exchangerates::rates.exchange_rates');
@@ -29,7 +28,7 @@ class ExchangeRatesWidget extends BaseWidget
         $startDate = $this->startDate();
         $endDate = $this->endDate();
 
-        return ExchangeRate::query()->whereBetween('date', [$startDate, $endDate]);
+        return ExchangeRate::query()->whereBetween('date', [$startDate, $endDate])->orderByDesc('date');
     }
 
     protected function getTableColumns(): array
@@ -37,12 +36,11 @@ class ExchangeRatesWidget extends BaseWidget
         return [
             TextColumn::make('date')
                 ->label(__('exchangerates::rates.date'))
-                ->date()
-                ->sortable(),
+                ->date(),
             TextColumn::make('value')
                 ->label(__('exchangerates::rates.value'))
-                ->numeric()
-                ->sortable(),
+                ->alignRight()
+                ->numeric(),
             TextColumn::make('currency.code')
                 ->label(__('exchangerates::rates.currency'))
                 ->sortable(),

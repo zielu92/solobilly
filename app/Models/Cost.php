@@ -139,15 +139,11 @@ class Cost extends Model
                 ->directory('costs/invoices')
                 ->previewable()
                 ->hintAction(
-->hintAction(
-    fn ($state) => $state
-        ? Action::make('download_invoice')
-            ->label(__('costs.download_invoice'))
-            ->action(fn () => Storage::download($state))
-        : null
-)
-                        return null;
-                    }
+                    fn ($state) => $state
+                        ? Action::make('download_invoice')
+                            ->label(__('costs.download_invoice'))
+                            ->action(fn () => Storage::download($state))
+                        : null
                 )
                 ->visibility('private')
                 ->imageEditor()
@@ -157,14 +153,11 @@ class Cost extends Model
                 ->label(__('costs.file_path'))
                 ->directory('costs/receipts')
                 ->hintAction(
-                    function ($state) {
-                        if ($state) {
-                            return Action::make('download_receipt')
-                                ->label(__('costs.download_receipt'))
-                                ->action(fn() => Storage::download($state));
-                        }
-                        return null;
-                    }
+                    fn ($state) => $state
+                        ? Action::make('download_receipt')
+                            ->label(__('costs.download_receipt'))
+                            ->action(fn() => Storage::download($state))
+                        : null
                 )
                 ->visibility('private')
                 ->imageEditor()

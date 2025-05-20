@@ -23,7 +23,7 @@ class CostCategoryFactory extends Factory
         return [
             'name' => fake()->name(),
             'description' => fake()->text(),
-            'color' => fake()->word(),
+            'color' => randomColorHex(),
             'is_tax_related' => fake()->boolean(),
         ];
     }

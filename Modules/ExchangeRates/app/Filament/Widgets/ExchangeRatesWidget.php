@@ -27,9 +27,10 @@ class ExchangeRatesWidget extends BaseWidget
     {
         $startDate = $this->startDate();
         $endDate = $this->endDate();
-
         return ExchangeRate::query()->whereBetween('date', [$startDate, $endDate])->orderByDesc('date');
     }
+
+    public $tableRecordsPerPage = 5;
 
     protected function getTableColumns(): array
     {
@@ -53,11 +54,10 @@ class ExchangeRatesWidget extends BaseWidget
     {
         return [
             SelectFilter::make('currency_id')
-                ->options(fn() => Currency::whereIn('id', setting('general.currencies'))->pluck('code', 'id')->toArray())
+                ->options(fn() => Currency::whereIn('id', setting('general.currencies'))
+                    ->where('id', '!=', setting('general.default_currency'))
+                    ->pluck('code', 'id')->toArray())
                 ->label(__('exchangerates::rates.currency')),
-            SelectFilter::make('base_currency_id')
-                ->options(fn() => Currency::whereIn('id', setting('general.currencies'))->pluck('code', 'id')->toArray())
-                ->label(__('exchangerates::rates.base_currency')),
         ];
     }
 

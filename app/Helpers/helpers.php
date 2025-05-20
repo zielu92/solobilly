@@ -39,3 +39,10 @@ if (!function_exists('textColorContrast')) {
         return "black";
     }
 }
+
+if(!function_exists('generateFileHash')) {
+    function generateFileHash($path)
+    {
+        return hash_hmac('sha256', $path, config('app.key'));
+    }
+}

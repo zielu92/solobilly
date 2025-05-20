@@ -3,16 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CostCategoryResource\Pages;
-use App\Filament\Resources\CostCategoryResource\RelationManagers;
 use App\Models\CostCategory;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
 class CostCategoryResource extends Resource
 {
     protected static ?string $model = CostCategory::class;
@@ -35,21 +30,7 @@ class CostCategoryResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label(__('costs.name'))
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\ColorPicker::make('color')
-                    ->label(__('costs.color'))
-                    ->default(null),
-                Forms\Components\Textarea::make('description')
-                    ->label(__('costs.description'))
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('is_tax_related')
-                    ->label(__('costs.tax_related'))
-                    ->required(),
-            ]);
+            ->schema(CostCategory::getForm());
     }
 
     public static function table(Table $table): Table
@@ -58,10 +39,6 @@ class CostCategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('costs.name'))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('color')
-                    ->label(__('costs.color'))
-                    ->badge()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_tax_related')
                     ->label(__('costs.tax_related'))
@@ -86,11 +63,6 @@ class CostCategoryResource extends Resource
         return [
             //
         ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 
     public static function getPages(): array

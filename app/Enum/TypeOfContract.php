@@ -17,4 +17,9 @@ enum TypeOfContract: string implements HasLabel
     {
         return __(sprintf('buyers.type.%s',$this->value));
     }
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

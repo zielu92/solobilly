@@ -41,7 +41,6 @@ class Invoice extends Model
         'parent_id',
         'user_id',
         'comment',
-        'currency',
         'issuer_name',
         'grand_total_net',
         'grand_total_gross',

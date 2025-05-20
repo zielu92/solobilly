@@ -107,7 +107,6 @@ class Buyer extends Model
                 ->numeric()
                 ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER->value || $get('contract_type')==null)
                 ->default(null),
-
         ];
     }
 }

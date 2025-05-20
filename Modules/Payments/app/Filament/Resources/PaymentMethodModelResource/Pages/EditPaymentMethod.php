@@ -6,6 +6,7 @@ use Modules\Payments\Filament\Resources\PaymentMethodModelResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Modules\Payments\Filament\Resources\PaymentMethodResource;
+use Modules\Payments\PaymentMethodsManager;
 
 class EditPaymentMethod extends EditRecord
 {
@@ -16,5 +17,15 @@ class EditPaymentMethod extends EditRecord
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        $record = $this->getRecord();
+        $redirect = PaymentMethodsManager::getEditCreateRoute($record->method, $record);
+        if($redirect) {
+            return $redirect;
+        }
+        return parent::getRedirectUrl();
     }
 }

@@ -23,4 +23,6 @@ return [
     'month'        => 'This month',
     'week'         => 'Last week',
     'year'         => 'This year',
+    'download_receipt' => 'Download Receipt File',
+    'download_invoice' => 'Download Invoice File',
     ];

@@ -139,12 +139,13 @@ class Cost extends Model
                 ->directory('costs/invoices')
                 ->previewable()
                 ->hintAction(
-                    function ($state) {
-                        if ($state) {
-                            return Action::make('download_invoice')
-                                ->label(__('costs.download_invoice'))
-                                ->action(fn ($state) => Storage::download(collect($state)->first()));
-                        }
+->hintAction(
+    fn ($state) => $state
+        ? Action::make('download_invoice')
+            ->label(__('costs.download_invoice'))
+            ->action(fn () => Storage::download($state))
+        : null
+)
                         return null;
                     }
                 )

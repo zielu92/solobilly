@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Cost;
 use App\Models\Currency;
 use Filament\Forms;
 use Filament\Tables;
@@ -100,6 +101,18 @@ class InvoiceResource extends Resource
         return [
 
         ];
+    }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        $unpaid =  Invoice::where('payment_status', 'not_paid')->count();
+        return $unpaid > 0 ? $unpaid : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'danger';
     }
 
 

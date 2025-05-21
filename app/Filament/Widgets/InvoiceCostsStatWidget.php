@@ -73,19 +73,19 @@ class InvoiceCostsStatWidget extends BaseWidget
         }
 
         return [
-            Stat::make(__('dashboard.est_invoice_net'), $totalValue . ' ' . $defaultCurrency->code)
+            Stat::make(__('dashboard.est_invoice_net'), $this->formatAmount($totalValue) . ' ' . $defaultCurrency->code)
                 ->description($startDate->format('d-m-Y') . ' - ' . $endDate->format('d-m-Y'))
                 ->descriptionIcon('heroicon-o-banknotes', IconPosition::Before)
                 ->chart($totalValues)
                 ->color('success'),
 
-            Stat::make(__('dashboard.est_costs_net'), $totalCost . ' ' . $defaultCurrency->code)
+            Stat::make(__('dashboard.est_costs_net'), $this->formatAmount($totalCost) . ' ' . $defaultCurrency->code)
                 ->description($startDate->format('d-m-Y') . ' - ' . $endDate->format('d-m-Y'))
                 ->descriptionIcon('heroicon-o-credit-card', IconPosition::Before)
                 ->chart($totalCosts)
                 ->color('warning'),
 
-            Stat::make(__('dashboard.est_tax_value'), $totalTax . ' ' . $defaultCurrency->code)
+            Stat::make(__('dashboard.est_tax_value'), $this->formatAmount($totalTax) . ' ' . $defaultCurrency->code)
                 ->description($startDate->format('d-m-Y') . ' - ' . $endDate->format('d-m-Y'))
                 ->descriptionIcon('heroicon-o-building-office', IconPosition::Before)
                 ->chart($totalTaxes)
@@ -125,5 +125,10 @@ class InvoiceCostsStatWidget extends BaseWidget
             ->whereDate('date', '>=', $startDate)
             ->whereDate('date', '<=', $endDate)
             ->get();
+    }
+
+    private function formatAmount($amount): string
+    {
+       return number_format($amount, 2, ',', ' ');
     }
 }

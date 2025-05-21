@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CostResource\Pages;
-use App\Filament\Resources\CostResource\Widgets\CostsChartWidget;
 use App\Models\Cost;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -42,14 +41,12 @@ class CostResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('costs.name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('amount')
-                    ->label(__('costs.amount'))
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('amount_gross')
                     ->label(__('costs.amount_gross'))
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('currency.code')
+                    ->label(__('invoices.currency')),
                 Tables\Columns\TextColumn::make('category.name')
                     ->label(__('costs.cost_category'))
                     ->numeric()
@@ -80,12 +77,16 @@ class CostResource extends Resource
     }
 
 
-//    public static function getWidgets(): array
-//    {
-//        return [
-//            CostsChartWidget::class,
-//        ];
-//    }
+    public static function getNavigationBadge(): ?string
+    {
+        $unpaid =  Cost::where('payment_date', null)->count();
+        return $unpaid > 0 ? $unpaid : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'danger';
+    }
 
     public static function getPages(): array
     {

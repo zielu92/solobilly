@@ -29,6 +29,7 @@ class InvoiceCostsStatWidget extends BaseWidget
         // Get Invoices
         $invoices = Invoice::select('grand_total_net', 'grand_total_gross', 'created_at', 'currency_id')
             ->where('payment_status', $status)
+            ->where('type', 'regular')
             ->whereDate('sale_date', '>=', $startDate)
             ->whereDate('sale_date', '<=', $endDate)
             ->get();

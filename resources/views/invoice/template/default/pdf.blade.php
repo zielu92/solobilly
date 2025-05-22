@@ -55,7 +55,14 @@ if($showDiscount)
         <div class="text-left font-semibold px-10">
             <p class="text-xs">
                 <strong>Sprzedawca (Seller):</strong><br>
-
+                {{setting('seller.company_name')}}<br>
+                {{setting('seller.address')}}<br>
+                {{setting('seller.postal_code')}}
+                {{setting('seller.city')}}<br>
+                {{setting('seller.country')}}<br>
+                @if(setting('seller.nip')!='')
+                    NIP/Tax ID: {{setting('seller.nip')}}<br>
+                @endif
             </p>
         </div>
         <div class="text-left font-semibold">

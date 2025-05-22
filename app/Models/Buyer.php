@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -34,7 +35,8 @@ class Buyer extends Model
         'krs',
         'contract_type',
         'contract_rate',
-        'color'
+        'color',
+        'currency_id'
     ];
 
     /**
@@ -45,6 +47,11 @@ class Buyer extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
+    }
 
     public static function getForm(): array
     {
@@ -107,6 +114,15 @@ class Buyer extends Model
                 ->numeric()
                 ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER->value || $get('contract_type')==null)
                 ->default(null),
+            Select::make('currency_id')
+                ->label(__('invoices.currency'))
+                ->columnSpan(1)
+                ->live()
+                ->options(
+                    Currency::whereIn('id', setting('general.currencies'))->get()->pluck('code', 'id')
+                )
+                ->default(Currency::find(setting('general.default_currency'))->id)
+                ->required()
         ];
     }
 }

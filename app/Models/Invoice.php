@@ -166,6 +166,24 @@ class Invoice extends Model
                 ->default('not_paid')
                 ->required(),
 
+            Select::make('buyer_id')
+                ->label(__('invoices.buyer'))
+                ->hidden(function() use ($buyerId) {
+                    return $buyerId !== null;
+                })
+                ->relationship('buyer', 'name')
+                ->columnSpan(2)
+                ->preload()
+                ->live()
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $buyer = Buyer::select('currency_id')->find($state);
+                    if ($buyer && $buyer->currency_id) {
+                        $set('currency_id', $buyer->currency_id);
+                        $set('currency_code', $buyer->currency->code);
+                    }
+                })
+                ->required(),
+
             Select::make('currency_id')
                 ->label(__('invoices.currency'))
                 ->columnSpan(1)
@@ -187,16 +205,6 @@ class Invoice extends Model
                     $currency = Currency::find($defaultCurrencyId);
                     return $currency ? $currency->code : '';
                 }),
-
-            Select::make('buyer_id')
-                ->label(__('invoices.buyer'))
-                ->hidden(function() use ($buyerId) {
-                    return $buyerId !== null;
-                })
-                ->relationship('buyer', 'name')
-                ->columnSpan(2)
-                ->preload()
-                ->required(),
 
             Select::make('payment_method_id')
                 ->label(__('invoices.payment_method'))

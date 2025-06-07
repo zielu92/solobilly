@@ -3,9 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BuyerResource\Pages;
-use App\Filament\Resources\BuyerResource\RelationManagers;
 use App\Models\Buyer;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -90,7 +88,6 @@ class BuyerResource extends Resource
         return [
             'index' => Pages\ListBuyers::route('/'),
             'create' => Pages\CreateBuyer::route('/create'),
-            // 'edit' => Pages\EditBuyer::route('/{record}/edit'),
         ];
     }
 

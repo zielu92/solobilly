@@ -3,8 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\Currency;
+use Chiiya\FilamentAccessControl\Traits\AuthorizesPageAccess;
 use Closure;
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,6 +15,7 @@ use Outerweb\FilamentSettings\Filament\Pages\Settings as BaseSettings;
 
 class Settings extends BaseSettings
 {
+    use AuthorizesPageAccess;
     protected static ?int $navigationSort = 0;
     protected static ?string $navigationGroup = 'Settings';
     public static function getNavigationLabel(): string
@@ -30,6 +33,21 @@ class Settings extends BaseSettings
         ];
     }
 
+    public static string $permission = 'settings.view';
+
+    public static function canAccess(): bool
+    {
+        return Filament::auth()->user()->can(static::$permission);
+    }
+
+    public function mount(): void
+    {
+        if (!request()->header('X-Livewire')) {
+            static::authorizePageAccess();
+        }
+        parent::mount();
+    }
+
     public function schema(): array|Closure
     {
         return [
@@ -44,12 +62,29 @@ class Settings extends BaseSettings
                                 ->label(__('settings.basic_currencies'))
                                 ->live()
                                 ->multiple()
-                                ->options(Currency::all()->pluck('code', 'id')),
+                                ->options(Currency::all()->pluck('code', 'id'))
+                                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                    // Get current default currency
+                                    $currentDefault = $get('general.default_currency');
+
+                                    // If current default is not in the new selection, clear it
+                                    if ($currentDefault && !in_array($currentDefault, $state ?? [])) {
+                                        $set('general.default_currency', null);
+                                    }
+                                }),
                             Select::make('general.default_currency')
                                 ->label(__('settings.default_currency'))
+                                ->live()
+
                                 ->options(function (Get $get) {
-                                    return Currency::whereIn('id', $get('general.currencies'))->get()->pluck('code', 'id');
-                                }),
+                                    $currencyIds = $get('general.currencies') ?? [];
+
+                                    if (empty($currencyIds)) {
+                                        return [];
+                                    }
+
+                                    return Currency::whereIn('id', $currencyIds)->get()->pluck('code', 'id');
+                                })
                         ]),
                     Tabs\Tab::make('Seller')
                         ->label(__('settings.seller'))
@@ -83,7 +118,7 @@ class Settings extends BaseSettings
                                 ->email()
                                 ->maxLength(255)
                                 ->required(),
-                            TextInput::make('seller_.hone')
+                            TextInput::make('seller.phone')
                                 ->label(__('settings.seller_phone'))
                                 ->tel()
                                 ->maxLength(255)

@@ -5,4 +5,5 @@ return [
     'invoices'  => 'Faktury',
     'costs'     => 'Koszty',
     'settings'  => 'Ustawienia',
+    'users'     => 'Użytkownicy'
 ];

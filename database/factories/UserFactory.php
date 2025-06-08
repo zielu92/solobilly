@@ -24,10 +24,14 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'expires_at' => null,
+            'two_factor_code' => null,
+            'two_factor_expires_at' => null,
             'remember_token' => Str::random(10),
         ];
     }
@@ -41,4 +45,36 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
-}
+
+    /**
+     * Indicate that the user account should be expired.
+     */
+    public function expired(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'expires_at' => now()->subDay(),
+        ]);
+    }
+
+    /**
+     * Indicate that the user has two-factor authentication enabled.
+     */
+    public function withTwoFactor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'two_factor_code' => fake()->numerify('######'),
+            'two_factor_expires_at' => now()->addMinutes(5),
+        ]);
+    }
+
+    /**
+     * Indicate that the user has an expired two-factor authentication code.
+     */
+    public function withExpiredTwoFactor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'two_factor_code' => fake()->numerify('######'),
+            'two_factor_expires_at' => now()->subMinutes(5),
+        ]);
+    }
+    }

@@ -38,12 +38,9 @@ describe('User Factory', function () {
 
     it('handles email verification correctly', function () {
         $user = User::factory()->create();
-
-        if ($user->email_verified_at === null) {
-            expect($user->email_verified_at)->toBeNull();
-        } else {
-            expect($user->email_verified_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
-        }
+        expect($user->email_verified_at)
+                ->not->toBeNull()
+                ->toBeInstanceOf(\Illuminate\Support\Carbon::class);
     });
 
     it('creates multiple unique users', function () {
@@ -135,13 +132,8 @@ describe('User Authentication', function () {
         $verifiedUser = User::factory()->create();
         $unverifiedUser = User::factory()->unverified()->create();
 
-        expect($unverifiedUser->email_verified_at)->toBeNull();
-
-        if ($verifiedUser->email_verified_at === null) {
-            expect($verifiedUser->email_verified_at)->toBeNull();
-        } else {
-            expect($verifiedUser->email_verified_at)->not->toBeNull();
-        }
+        expect($unverifiedUser->email_verified_at)->toBeNull()
+            ->and($verifiedUser->email_verified_at)->not->toBeNull();
     });
 
     it('checks if user account is expired', function () {
@@ -205,7 +197,7 @@ describe('User Roles and Permissions', function () {
         expect($user->hasRole('ADMIN'))->toBeFalse();
     });
 
-    it('syncs user roles', closure: function () {
+    it('syncs user roles', function () {
         $user = User::factory()->create();
         $user->assignRole([$this->adminRole, $this->userRole]);
 

@@ -7,8 +7,6 @@ use App\Models\User;
 use Chiiya\FilamentAccessControl\Database\Seeders\FilamentAccessControlSeeder;
 use Chiiya\FilamentAccessControl\Enumerators\RoleName;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Env;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {

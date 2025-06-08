@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
             $userDetails = [
                 'first_name' => 'Admin',
                 'email' => Env("FIRST_USER_EMAIL"),
-                'password' => bcrypt(Env("FIRST_USER_PASSWORD"))
+                'password' => bcrypt(Env("FIRST_USER_PASSWORD")),
+                'email_verified_at' => now()
             ];
             $user = User::query()->create($userDetails);
             $user->assignRole(RoleName::SUPER_ADMIN);

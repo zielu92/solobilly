@@ -18,7 +18,7 @@ class TransferPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Transfer $Transfer): bool
+    public function view(User $user, Transfer $transfer): bool
     {
         return $user->can('transfer.view');
     }
@@ -34,7 +34,7 @@ class TransferPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Transfer $Transfer): bool
+    public function update(User $user, Transfer $transfer): bool
     {
         return $user->can('transfers.update');
     }
@@ -42,7 +42,7 @@ class TransferPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Transfer $Transfer): bool
+    public function delete(User $user, Transfer $transfer): bool
     {
         return $user->can('transfers.delete');
     }
@@ -50,7 +50,7 @@ class TransferPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Transfer $Transfer): bool
+    public function restore(User $user, Transfer $transfer): bool
     {
         return $user->can('transfers.restore');
     }
@@ -58,7 +58,7 @@ class TransferPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Transfer $Transfer): bool
+    public function forceDelete(User $user, Transfer $transfer): bool
     {
         return $user->can('transfers.forceDelete');
     }

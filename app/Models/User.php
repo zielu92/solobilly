@@ -12,21 +12,26 @@ class User extends FilamentUser
 {
     use HasFactory, Notifiable;
 
-//    public function canAccessPanel(Panel $panel): bool
-//    {
-//        return $this->hasVerifiedEmail();
-//    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasVerifiedEmail();
+    }
 
     protected $guard_name = 'filament';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'first_name',
+        'last_name',
+        'expires_at',
+        'two_factor_code',
+        'two_factor_expires_at',
     ];
 
     /**
@@ -47,6 +52,8 @@ class User extends FilamentUser
     protected function casts(): array
     {
         return [
+            'expires_at' => 'datetime',
+            'two_factor_expires_at' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];

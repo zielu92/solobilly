@@ -37,7 +37,7 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice): bool
     {
-        return $user->can('invoices.edit');
+        return $user->can('invoices.update');
     }
 
     /**

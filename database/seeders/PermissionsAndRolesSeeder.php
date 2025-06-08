@@ -94,7 +94,7 @@ class PermissionsAndRolesSeeder extends Seeder
             }
         }
         //assign permissions to accountant
-        $accountantRole = Role::create([
+        $accountantRole = Role::firstOrCreate([
             'name' => 'accountant',
             'guard_name' => 'filament',
         ]);

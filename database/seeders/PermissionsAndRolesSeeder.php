@@ -79,7 +79,7 @@ class PermissionsAndRolesSeeder extends Seeder
 
         $allPermissions = array_merge($permissionsAdmin, $commonPermissions);
         foreach ($allPermissions as $permission) {
-            Permission::create([
+            Permission::updateOrCreate([
                 'name' => $permission,
                 'guard_name' => 'filament',
             ]);

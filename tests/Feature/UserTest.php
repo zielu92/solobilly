@@ -31,7 +31,7 @@ describe('User Factory', function () {
             ->expires_at->toBeNull()
             ->two_factor_code->toBeNull()
             ->two_factor_expires_at->toBeNull()
-            ->and(strlen($user->remember_token))->toBe(10)
+            ->and(strlen($user->remember_token))->toBe(60)
             ->and(Hash::check('password', $user->password))->toBeTrue();
 
     });

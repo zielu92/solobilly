@@ -31,6 +31,8 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'expires_at' => null,
+            'two_factor_code' => null,
+            'two_factor_expires_at' => null
         ];
     }
 

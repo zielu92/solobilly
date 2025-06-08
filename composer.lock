@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e7b1e51747a1ab9a36f0310aea3f42b",
+    "content-hash": "c367058316b35611478c380bc6f787c9",
     "packages": [
         {
             "name": "amphp/amp",
@@ -1360,6 +1360,79 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "chiiya/filament-access-control",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chiiya/filament-access-control.git",
+                "reference": "c852441f5a8fe0289d2000b8f87ece3ff8a2fabb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chiiya/filament-access-control/zipball/c852441f5a8fe0289d2000b8f87ece3ff8a2fabb",
+                "reference": "c852441f5a8fe0289d2000b8f87ece3ff8a2fabb",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "illuminate/contracts": "^11.0|^12.0",
+                "php": "^8.2|^8.3",
+                "spatie/laravel-package-tools": "^1.11",
+                "spatie/laravel-permission": "^6.4"
+            },
+            "require-dev": {
+                "chiiya/laravel-code-style": "^3.0",
+                "orchestra/testbench": "^9.0|^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Chiiya\\FilamentAccessControl\\FilamentAccessControlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Chiiya\\FilamentAccessControl\\": "src",
+                    "Chiiya\\FilamentAccessControl\\Database\\Seeders\\": "database/seeders",
+                    "Chiiya\\FilamentAccessControl\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Elisha Witte",
+                    "email": "github@chiiya.moe",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Admin user, role and permission management for Laravel Filament",
+            "homepage": "https://github.com/chiiya/filament-access-control",
+            "keywords": [
+                "chiiya",
+                "filament",
+                "filament-access-control",
+                "laravel",
+                "permissions",
+                "roles"
+            ],
+            "support": {
+                "issues": "https://github.com/chiiya/filament-access-control/issues",
+                "source": "https://github.com/chiiya/filament-access-control/tree/2.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/chiiya",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-02-20T17:36:27+00:00"
         },
         {
             "name": "coolsam/modules",
@@ -7329,6 +7402,89 @@
                 "source": "https://github.com/spatie/laravel-pdf/tree/1.5.5"
             },
             "time": "2025-02-20T11:09:45+00:00"
+        },
+        {
+            "name": "spatie/laravel-permission",
+            "version": "6.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-permission.git",
+                "reference": "0cd412dcad066d75caf0b977716809be7e7642fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/0cd412dcad066d75caf0b977716809be7e7642fd",
+                "reference": "0cd412dcad066d75caf0b977716809be7e7642fd",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/container": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/database": "^8.12|^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "laravel/passport": "^11.0|^12.0",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^9.4|^10.1|^11.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Permission\\PermissionServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "6.x-dev",
+                    "dev-master": "6.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Spatie\\Permission\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Permission handling for Laravel 8.0 and up",
+            "homepage": "https://github.com/spatie/laravel-permission",
+            "keywords": [
+                "acl",
+                "laravel",
+                "permission",
+                "permissions",
+                "rbac",
+                "roles",
+                "security",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-permission/issues",
+                "source": "https://github.com/spatie/laravel-permission/tree/6.19.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-05-31T00:50:27+00:00"
         },
         {
             "name": "spatie/laravel-signal-aware-command",

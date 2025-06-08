@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\Cost;
 use App\Models\Currency;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Invoice;
@@ -81,6 +81,7 @@ class InvoiceResource extends Resource
             ])
             ->actions([
                 Action::make('Download PDF')
+                    ->visible(fn () => Filament::auth()->user()->can('invoice.view'))
                     ->icon('heroicon-o-document-text')
                     ->label(__('invoices.download'))
                     ->url(fn ($record) => URL::route('invoices.show', $record->id))

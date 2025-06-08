@@ -10,6 +10,10 @@ use App\Filament\Resources\CostResource;
 use App\Filament\Resources\InvoiceResource;
 use App\Filament\Resources\WorkLogResource;
 use App\Filament\Widgets\InvoiceCostsStatWidget;
+use Chiiya\FilamentAccessControl\FilamentAccessControlPlugin;
+use Chiiya\FilamentAccessControl\Resources\FilamentUserResource;
+use Chiiya\FilamentAccessControl\Resources\PermissionResource;
+use Chiiya\FilamentAccessControl\Resources\RoleResource;
 use Coolsam\Modules\ModulesPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -51,7 +55,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->globalSearch()
             ->brandName('Solo Billy')
-            ->id('app')
+            ->id('admin')
             ->path('/')
             ->login()
             ->colors([
@@ -92,6 +96,13 @@ class AppPanelProvider extends PanelProvider
                                 ...PaymentMethodResource::getNavigationItems(),
                                 ...ExchangeRateResource::getNavigationItems(),
                             ]),
+                        NavigationGroup::make('Users')->icon('heroicon-o-users')
+                            ->label(__('nav.users'))
+                            ->collapsed()
+                            ->items([
+                                ...FilamentUserResource::getNavigationItems(),
+                                ...RoleResource::getNavigationItems(),
+                            ])
                     ]);
             })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -115,6 +126,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->sidebarCollapsibleOnDesktop()
             ->plugins([
+                FilamentAccessControlPlugin::make(),
                 FilamentSpatieLaravelBackupPlugin::make(),
                 ModulesPlugin::make(),
                 FilamentSettingsPlugin::make()

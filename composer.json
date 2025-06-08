@@ -9,6 +9,7 @@
         "php": "^8.2",
         "azuyalabs/yasumi": "^2.7",
         "bezhansalleh/filament-language-switch": "^3.1",
+        "chiiya/filament-access-control": "^2.6",
         "coolsam/modules": "^4",
         "filament/actions": "^3.2",
         "filament/filament": "^3.2",

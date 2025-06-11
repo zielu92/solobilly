@@ -103,6 +103,7 @@ class Cost extends Model
                 ->required()
                 ->live()
                 ->numeric()
+                ->maxValue(0)
                 ->afterStateUpdated(fn($state, callable $set, callable $get) =>
                 $set('amount_gross', is_numeric($get('amount')) ? $get('amount')*1.23 : 0)
                 ),
@@ -125,6 +126,8 @@ class Cost extends Model
                 ->label(__('costs.percent_deductible_from_taxes'))
                 ->default(100)
                 ->required()
+                ->maxValue(100)
+                ->minValue(0)
                 ->suffix("%")
                 ->numeric(),
             Textarea::make('description')

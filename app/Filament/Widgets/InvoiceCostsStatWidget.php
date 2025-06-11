@@ -52,7 +52,7 @@ class InvoiceCostsStatWidget extends BaseWidget
         $totalCosts = [];
 
         foreach ($costs as $cost) {
-            $grandTotal = $type === 'net' ? $cost->amount : $cost->amount_gross;
+            $grandTotal = $type === 'net' ? $cost->afterTaxDeductibleCostNet : $cost->afterTaxDeductibleCostGross;
             $grandTotal = $this->convertToDefaultCurrency($grandTotal, $cost->currency_id, $cost->created_at);
 
             $totalCost += $grandTotal;
@@ -114,7 +114,7 @@ class InvoiceCostsStatWidget extends BaseWidget
 
     private function getCosts(bool $isTaxRelated, $startDate, $endDate, $status)
     {
-        return Cost::select('amount_gross', 'amount', 'created_at', 'currency_id')
+        return Cost::select('amount_gross', 'amount', 'created_at', 'currency_id', 'percent_deductible_from_taxes')
             ->when($status === 'paid', function ($query) {
                 $query->whereNotNull('payment_date');
             }, function ($query) {

@@ -9,6 +9,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,6 +40,7 @@ class Cost extends Model
         'invoice_due_date',
         'payment_date',
         'user_id',
+        'percent_deductible_from_taxes'
     ];
 
     /**
@@ -56,6 +58,7 @@ class Cost extends Model
         'invoice_due_date' => 'date',
         'payment_date' => 'date',
         'user_id' => 'integer',
+        'percent_deductible_from_taxes' => 'integer',
     ];
 
     public function category(): BelongsTo
@@ -73,6 +76,20 @@ class Cost extends Model
         return $this->belongsTo(Currency::class);
     }
 
+    public function afterTaxDeductibleCostNet(): Attribute
+    {
+        return Attribute::get(
+            fn () => round($this->amount * ($this->percent_deductible_from_taxes / 100), 2)
+        );
+    }
+
+    public function afterTaxDeductibleCostGross(): Attribute
+    {
+        return Attribute::get(
+            fn () => round($this->amount_gross * ($this->percent_deductible_from_taxes / 100), 2)
+        );
+    }
+
     public static function getForm(): array
     {
         return [
@@ -86,6 +103,7 @@ class Cost extends Model
                 ->required()
                 ->live()
                 ->numeric()
+                ->maxValue(0)
                 ->afterStateUpdated(fn($state, callable $set, callable $get) =>
                 $set('amount_gross', is_numeric($get('amount')) ? $get('amount')*1.23 : 0)
                 ),
@@ -103,6 +121,14 @@ class Cost extends Model
                 ->label(__('costs.amount_gross'))
                 ->required()
                 ->live()
+                ->numeric(),
+            TextInput::make('percent_deductible_from_taxes')
+                ->label(__('costs.percent_deductible_from_taxes'))
+                ->default(100)
+                ->required()
+                ->maxValue(100)
+                ->minValue(0)
+                ->suffix("%")
                 ->numeric(),
             Textarea::make('description')
                 ->label(__('costs.description'))

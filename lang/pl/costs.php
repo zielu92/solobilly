@@ -23,4 +23,5 @@ return [
     'month'        => 'Ten miesiąc',
     'week'         => 'Ostatni tydzeń',
     'year'         => 'Ten rok',
-    ];
+    'percent_deductible_from_taxes' => 'Procent możliwy do odliczenia od podatku',
+];

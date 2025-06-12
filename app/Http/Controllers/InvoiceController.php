@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Payments\PaymentMethodsManager;
-use Spatie\Browsershot\Browsershot;
-use Spatie\LaravelPdf\Facades\Pdf;
 
 
 class InvoiceController extends Controller
@@ -16,15 +15,15 @@ class InvoiceController extends Controller
         $items = $invoice->invoiceItems;
         $template = 'default';
         $paymentMethod = PaymentMethodsManager::getPaymentMethodTemplate(strtolower($invoice->paymentMethod->method), $invoice->paymentMethod->id);
-        return Pdf::view('invoice.template.'.$template.'.pdf', [
+
+        $pdf = Pdf::loadView('invoice.template.test.pdf',  [
             'invoice'       => $invoice,
             'items'         => $items,
             'showQty'       => $items->sum('quantity') !== count($items),
             'showDiscount'  => $items->sum('total_discount') > 0,
             'paymentMethod' => $paymentMethod,
-        ])
-            ->format('a4')
-        ->name("#{$invoice->no}");
+        ]);
 
+        return $pdf->stream($invoice->no.'.pdf');
     }
 }

@@ -17,6 +17,7 @@ class PermissionsAndRolesSeeder extends Seeder
         $permissionsAdmin = [
             'settings.view',
             'invoices.delete',
+            'invoices.update',
             'invoices.create',
             'invoices.forceDelete',
             'buyers.view',

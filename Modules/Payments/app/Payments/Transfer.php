@@ -18,9 +18,9 @@ class Transfer extends Payment
     {
         $transferRecord = TransferModel::where('payment_method_id', $record->id)->first();
         if ($transferRecord) {
-            return route('filament.app.resources.transfers.edit', ['record' => $transferRecord->id]);
+            return route('filament.admin.resources.transfers.edit', ['record' => $transferRecord->id]);
         } else {
-            return route('filament.app.resources.transfers.create', ['payment_method_id' => $record->id]);
+            return route('filament.admin.resources.transfers.create', ['payment_method_id' => $record->id]);
         }
     }
 

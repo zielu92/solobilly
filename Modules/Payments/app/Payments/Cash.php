@@ -2,9 +2,9 @@
 
 namespace Modules\Payments\Payments;
 
-use Modules\Payments\DTO\pdfTemplateData;
+use Modules\Payments\DTO\PdfTemplateData;
 use Modules\Payments\Models\Transfer as TransferModel;
-use View;
+use Illuminate\Support\Facades\View;
 
 class Cash extends Payment
 {

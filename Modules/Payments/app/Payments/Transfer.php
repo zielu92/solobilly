@@ -2,9 +2,10 @@
 
 namespace Modules\Payments\Payments;
 
-use Modules\Payments\DTO\pdfTemplateData;
+use Illuminate\Support\Facades\View;
+use Modules\Payments\DTO\PdfTemplateData;
 use \Modules\Payments\Models\Transfer as TransferModel;
-use View;
+
 
 class Transfer extends Payment
 {

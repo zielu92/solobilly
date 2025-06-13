@@ -3,7 +3,7 @@
 namespace Modules\Payments;
 
 use Illuminate\Support\Facades\Config;
-use Modules\Payments\DTO\pdfTemplateData;
+use Modules\Payments\DTO\PdfTemplateData;
 
 class PaymentMethodsManager
 {

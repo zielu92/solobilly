@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Payments\PaymentMethodsManager;
-use View;
+use Illuminate\Support\Facades\View;
 
 
 class InvoiceController extends Controller

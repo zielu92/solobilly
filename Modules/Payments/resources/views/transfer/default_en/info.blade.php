@@ -14,11 +14,11 @@
                 <td class="text-left">
                     <p>Transfer</p>
                     <p>{{$invoice->due_date->format('Y-m-d')}}</p>
-                    <p>{{$paymentMethod->data->accountNumber}}</p>
-                    <p>{{$paymentMethod->data->swift}}</p>
-                    <p>{{$paymentMethod->data->bankName}}</p>
-                    <p>{{$paymentMethod->data->beneficiaryName}}</p>
-                    <p>{{$paymentMethod->data->beneficiaryAddress}}</p>
+                    <p>{{$paymentMethod->data?->accountNumber}}</p>
+                    <p>{{$paymentMethod->data?->swift}}</p>
+                    <p>{{$paymentMethod->data?->bankName}}</p>
+                    <p>{{$paymentMethod->data?->beneficiaryName}}</p>
+                    <p>{{$paymentMethod->data?->beneficiaryAddress}}</p>
                 </td>
             </tr>
         </table>

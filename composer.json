@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "azuyalabs/yasumi": "^2.7",
+        "barryvdh/laravel-dompdf": "^3.1",
         "bezhansalleh/filament-language-switch": "^3.1",
         "chiiya/filament-access-control": "^2.6",
         "coolsam/modules": "^4",
@@ -21,8 +22,7 @@
         "nwidart/laravel-modules": "^v11.1.10",
         "outerweb/filament-settings": "^1.2",
         "shuvroroy/filament-spatie-laravel-backup": "^2.2",
-        "spatie/laravel-data": "^4.15",
-        "spatie/laravel-pdf": "^1.5"
+        "spatie/laravel-data": "^4.15"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

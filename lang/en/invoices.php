@@ -44,5 +44,11 @@ return [
     'grand_total_net'    => 'Grand Total Net',
     'grand_total_tax'    => 'Grand Total Tax',
     'grand_total_discount'=> 'Grand Total Discount',
+    'template'           => 'Invoice Template',
+    'templates'          => [
+        'default'       => 'Default',
+        'default_pl'    => 'Default Polish',
+        'default_en'    => 'Default English',
+    ]
 
 ];

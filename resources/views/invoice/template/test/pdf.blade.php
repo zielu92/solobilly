@@ -205,8 +205,8 @@ if($showDiscount)
     </div>
 
     <div class="payment-section">
-        @if($paymentMethod && isset($paymentMethod->template))
-            @include($paymentMethod->template)
+        @if($paymentMethod && isset($paymentMethod['template']))
+            @include($paymentMethod['template'])
         @endif
     </div>
 
@@ -218,7 +218,7 @@ if($showDiscount)
         <table class="signature-grid">
             <tr>
                 <td>
-                    Wystawił(a): @if($invoice->issuer_name)({{$invoice->issuer_name}})@endif<br/><br/>
+                    Wystawił(a): ({{$invoice->issuer_name}})<br/><br/>
                     <div class="signature-line"></div>
                 </td>
                 <td>

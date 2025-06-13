@@ -50,7 +50,8 @@ class Invoice extends Model
         'due',
         'path',
         'currency_id',
-        'payment_method_id'
+        'payment_method_id',
+        'template'
     ];
 
     /**
@@ -238,8 +239,18 @@ class Invoice extends Model
 
             TextInput::make('comment')
                 ->label(__('invoices.comments'))
-                ->columnSpan(3)
+                ->columnSpan(2)
                 ->nullable(),
+
+            Select::make('template')
+                ->label(__('invoices.template'))
+                ->columnSpan(2)
+                ->default('default')
+                ->options([
+                   'default' => __('invoices.templates.default'),
+                   'default_pl' => __('invoices.templates.default_pl'),
+                   'default_en' => __('invoices.templates.default_en'),
+                ]),
 
             TextInput::make('issuer_name')
                 ->label(__('invoices.issuer_name'))

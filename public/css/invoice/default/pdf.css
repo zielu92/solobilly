@@ -1,0 +1,299 @@
+/* Invoice Template CSS - CSS 2.1 Compatible */
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Helvetica", Arial, sans-serif;
+    line-height: 1.4;
+    font-size: 12px;
+}
+
+.container {
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #1f2937;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    margin: 0;
+}
+
+.invoice-info {
+    float: right;
+    width: 45%;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.invoice-info p {
+    font-size: 11px;
+    margin-bottom: 3px;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.clear-both {
+    clear: both;
+}
+
+.company-details {
+    margin: 20px 0;
+}
+
+.company-grid {
+    width: 100%;
+    border-spacing: 0;
+}
+
+.company-grid td {
+    width: 50%;
+    vertical-align: top;
+    padding: 0 10px;
+}
+
+.company-grid td:first-child {
+    padding-left: 0;
+}
+
+.company-grid td:last-child {
+    padding-right: 0;
+}
+
+.company-details p {
+    font-size: 11px;
+    text-align: left;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    line-height: 1.3;
+}
+
+.products-section {
+    margin: 30px 0;
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d1d5db;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.products-table thead {
+    background-color: #f3f4f6;
+}
+
+.products-table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: normal;
+    color: #374151;
+    text-transform: uppercase;
+    border-bottom: 1px solid #d1d5db;
+    border-right: 1px solid #e5e7eb;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.products-table th:last-child {
+    border-right: none;
+}
+
+.products-table th.text-right {
+    text-align: right;
+}
+
+.products-table tbody tr {
+    background-color: #ffffff;
+}
+
+.products-table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.products-table td {
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #4b5563;
+    border-bottom: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.products-table td:last-child {
+    border-right: none;
+}
+
+.products-table td.text-right {
+    text-align: right;
+}
+
+.products-table td.text-gray-900 {
+    color: #111827;
+    font-weight: normal;
+}
+
+.summary-row {
+    background-color: #f3f4f6 !important;
+}
+
+.summary-row td {
+    padding: 6px 12px;
+    font-weight: normal;
+    font-size: 11px;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.total-row {
+    background-color: #f3f4f6 !important;
+}
+
+.total-row td {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: normal;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.payment-section {
+    text-align: center;
+    margin: 20px 0;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.comment-section {
+    text-align: center;
+    margin: 20px 0 40px 0;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    font-size: 12px;
+}
+
+.signature-section {
+    position: absolute;
+    bottom: 30px;
+    left: 20px;
+    right: 20px;
+    font-size: 11px;
+}
+
+.signature-grid {
+    width: 100%;
+    border-spacing: 0;
+}
+
+.signature-grid td {
+    width: 50%;
+    vertical-align: top;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.signature-grid td:first-child {
+    text-align: left;
+}
+
+.signature-grid td:last-child {
+    text-align: right;
+}
+
+.signature-line {
+    margin-top: 15px;
+    border-bottom: 1px solid #000;
+    width: 150px;
+    display: inline-block;
+}
+
+.signature-grid td:first-child .signature-line {
+    margin-left: 0;
+}
+
+.signature-grid td:last-child .signature-line {
+    margin-right: 0;
+}
+
+strong {
+    font-weight: normal;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-grid {
+    width: 100%;
+    border-spacing: 0;
+    margin-bottom: 20px;
+}
+
+.payment-grid td {
+    width: 50%;
+    vertical-align: top;
+    padding: 0 10px;
+}
+
+.payment-grid td:first-child {
+    padding-left: 0;
+}
+
+.payment-grid td:last-child {
+    padding-right: 0;
+}
+
+.payment-details {
+    margin: 20px 0;
+}
+
+.payment-details p {
+    font-size: 11px;
+    font-family: "DejaVu Sans", Arial, sans-serif;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.payment-details .text-right {
+    text-align: right;
+}
+
+.payment-details .text-left {
+    text-align: left;
+}
+
+.payment-details .font-semibold {
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.container-xs {
+    margin: 0 auto;
+    padding: 20px;
+    font-size: 10px;
+}
+
+.container-xs .payment-details p {
+    font-size: 10px;
+}
+
+/* PDF-specific adjustments */
+@media print {
+    body {
+        font-size: 11px;
+    }
+
+    .container {
+        max-width: none;
+        padding: 15px;
+    }
+
+    .signature-section {
+        position: fixed;
+        bottom: 20px;
+    }
+}

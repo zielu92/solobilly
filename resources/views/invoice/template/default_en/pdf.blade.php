@@ -23,29 +23,29 @@ if($showDiscount)
             @if($invoice->type=='proforma')
                 Proforma
             @else
-                Faktura
+                Invoice
             @endif
         </h1>
     </div>
 
     <div class="invoice-info">
         <p>
-            <strong>Faktura nr. / Invoice no:</strong>
+            <strong>Invoice no:</strong>
             {{$invoice->no}}
         </p>
         <p>
-            Oryginał / Original
+            Original
         </p>
         <p>
-            <strong>Miejscowość / Place:</strong>
+            <strong>Place:</strong>
             {{$invoice->place}}
         </p>
         <p>
-            <strong>Data wystawienia / Date of issue:</strong>
+            <strong>Date of issue:</strong>
             {{$invoice->issue_date}}
         </p>
         <p>
-            <strong>Data sprzedaży / Date of sell:</strong>
+            <strong>Date of sell:</strong>
             {{$invoice->sale_date}}
         </p>
     </div>
@@ -57,26 +57,26 @@ if($showDiscount)
             <tr>
                 <td>
                     <p>
-                        <strong>Sprzedawca (Seller):</strong><br>
+                        <strong>Seller:</strong><br>
                         {{setting('seller.company_name')}}<br>
                         {{setting('seller.address')}}<br>
                         {{setting('seller.postal_code')}}
                         {{setting('seller.city')}}<br>
                         {{setting('seller.country')}}<br>
                         @if(setting('seller.nip')!='')
-                            NIP/Tax ID: {{setting('seller.nip')}}<br>
+                            Tax ID: {{setting('seller.nip')}}<br>
                         @endif
                     </p>
                 </td>
                 <td>
                     <p>
-                        <strong>Nabywca (Buyer):</strong><br>
+                        <strong>Buyer:</strong><br>
                         {{$invoice->buyer->company_name}}<br>
                         {{$invoice->buyer->address}}<br>
                         {{$invoice->buyer->postal_code}}
                         {{$invoice->buyer->city}}<br>
                         @if($invoice->buyer->nip!='')
-                            NIP/Tax ID: {{$invoice->buyer->nip}}<br>
+                            Tax ID: {{$invoice->buyer->nip}}<br>
                         @endif
                         @if($invoice->buyer->regon!='')
                             REGON: {{$invoice->buyer->regon}}<br>
@@ -92,40 +92,33 @@ if($showDiscount)
             <thead>
             <tr>
                 <th>
-                    <strong>L.p.</strong><br>
-                    No
+                    <strong>No</strong><br>
                 </th>
                 <th>
-                    <strong>Nazwa Usługi</strong><br>
-                    Description
+                    <strong>Description</strong><br>
                 </th>
                 <th>
-                    <strong>Wartość netto</strong><br>
-                    Net value
+                    <strong>Net value</strong><br>
+
                 </th>
                 <th class="text-right">
-                    <strong>Stawka VAT</strong><br>
-                    VAT
+                    <strong>VAT</strong><br>
                 </th>
                 @if($showDiscount)
                     <th class="text-right">
-                        <strong>Rabat</strong><br>
-                        Discount
+                        <strong>Discount</strong><br>
                     </th>
                 @endif
                 @if($showQty)
                     <th class="text-right">
-                        <strong>Ilość</strong><br>
-                        QTY
+                        <strong>QTY</strong><br>
                     </th>
                 @endif
                 <th class="text-right">
-                    <strong>Kwota VAT</strong><br>
-                    Vat amount
+                    <strong>Vat amount</strong><br>
                 </th>
                 <th class="text-right">
-                    <strong>Wartość brutto</strong><br>
-                    Total amount
+                    <strong>Total amount</strong><br>
                 </th>
             </tr>
             </thead>
@@ -165,7 +158,7 @@ if($showDiscount)
             @if($invoice->grand_total_gross!=$invoice->grand_total_net)
                 <tr class="summary-row">
                     <td colspan="{{$colspan}}" class="text-right">
-                        <strong>Wartość netto</strong> / Sub-Total:
+                        <strong>Sub-Total</strong>:
                     </td>
                     <td class="text-right">
                         {{$invoice->grand_total_net}} {{html_entity_decode($invoice->currency->symbol)}}
@@ -175,7 +168,7 @@ if($showDiscount)
             @if($invoice->grand_total_discount!='0.00')
                 <tr class="summary-row">
                     <td colspan="{{$colspan}}" class="text-right">
-                        <strong>Wartość rabatu</strong> / Discount:
+                        <strong>Discount</strong>:
                     </td>
                     <td class="text-right">
                         {{$invoice->grand_total_discount}} {{html_entity_decode($invoice->currency->symbol)}}
@@ -185,7 +178,7 @@ if($showDiscount)
             @if($invoice->grand_total_tax!='0.00')
                 <tr class="summary-row">
                     <td colspan="{{$colspan}}" class="text-right">
-                        <strong>Wartość podatku</strong> / Tax:
+                        <strong>Tax</strong>:
                     </td>
                     <td class="text-right">
                         {{$invoice->grand_total_tax}} {{html_entity_decode($invoice->currency->symbol)}}
@@ -194,7 +187,7 @@ if($showDiscount)
             @endif
             <tr class="total-row">
                 <td colspan="{{$colspan}}" class="text-right">
-                    <strong>Do Zapłaty</strong> / Total to pay
+                    <strong>Total to pay</strong>
                 </td>
                 <td class="text-right">
                     {{$invoice->grand_total_gross}} {{html_entity_decode($invoice->currency->symbol)}}
@@ -218,11 +211,11 @@ if($showDiscount)
         <table class="signature-grid">
             <tr>
                 <td>
-                    Wystawił(a): @if($invoice->issuer_name)({{$invoice->issuer_name}})@endif<br/><br/>
+                    Issued by: @if($invoice->issuer_name)({{$invoice->issuer_name}})@endif<br/><br/>
                     <div class="signature-line"></div>
                 </td>
                 <td>
-                    Odebrał(a):<br/><br/>
+                    Received by:<br/><br/>
                     <div class="signature-line"></div>
                 </td>
             </tr>

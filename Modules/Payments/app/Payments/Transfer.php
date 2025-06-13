@@ -2,7 +2,10 @@
 
 namespace Modules\Payments\Payments;
 
+use Modules\Payments\DTO\pdfTemplateData;
 use \Modules\Payments\Models\Transfer as TransferModel;
+use View;
+
 class Transfer extends Payment
 {
     protected string $code = 'transfer';
@@ -27,14 +30,14 @@ class Transfer extends Payment
     /**
     * Method which return path of blade template which can be displayed in invoice
     */
-    public function getMethodTemplate(int $id): array | null
+    public function getMethodTemplate(int $id, string $template): PdfTemplateData | null
     {
         $tm = TransferModel::withTrashed()->where('payment_method_id', $id)->first();
-
-        return [
-            'template' => 'payments::transfer.default.info',
-            'data' => $tm
-        ];
-
+        $view = 'payments::transfer.' . $template . '.info';
+        if (!View::exists($view)) {
+            return new PdfTemplateData('payments::transfer.default.info', $tm);
+        } else {
+            return new PdfTemplateData($view, $tm);
+        }
     }
 }

@@ -44,4 +44,10 @@ return [
     'grand_total_net'    => 'Suma netto',
     'grand_total_tax'    => 'Suma podatku',
     'grand_total_discount'=> 'Suma zniżek',
+    'template'           => 'Szablon faktury',
+    'templates'          => [
+        'default'       => 'Domyślny',
+        'default_pl'    => 'Domyślny polski',
+        'default_en'    => 'Domyślny angielski',
+    ]
 ];

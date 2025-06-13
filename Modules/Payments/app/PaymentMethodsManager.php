@@ -3,6 +3,7 @@
 namespace Modules\Payments;
 
 use Illuminate\Support\Facades\Config;
+use Modules\Payments\DTO\pdfTemplateData;
 
 class PaymentMethodsManager
 {
@@ -90,10 +91,10 @@ class PaymentMethodsManager
         return $object->haveURL();
     }
 
-    public static function getPaymentMethodTemplate(string $method, int $id): array | null
+    public static function getPaymentMethodTemplate(string $method, int $id, string $template): PdfTemplateData | null
     {
         $object = app(config('payment_methods.' . $method . '.class'));
-        return $object->getMethodTemplate($id);
+        return $object->getMethodTemplate($id, $template);
     }
 
 }

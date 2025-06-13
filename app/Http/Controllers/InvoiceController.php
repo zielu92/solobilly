@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Payments\PaymentMethodsManager;
+use View;
 
 
 class InvoiceController extends Controller
@@ -13,10 +14,19 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::with('invoiceItems')->findOrFail($id);
         $items = $invoice->invoiceItems;
-        $template = 'default';
-        $paymentMethod = PaymentMethodsManager::getPaymentMethodTemplate(strtolower($invoice->paymentMethod->method), $invoice->paymentMethod->id);
 
-        $pdf = Pdf::loadView('invoice.template.test.pdf',  [
+        $template = View::exists("invoice.template.{$invoice->template}.pdf")
+            ? $invoice->template
+            : 'default';
+
+        $view = "invoice.template.{$template}.pdf";
+        $paymentMethod = PaymentMethodsManager::getPaymentMethodTemplate(
+            strtolower($invoice->paymentMethod->method),
+            $invoice->paymentMethod->id,
+            $template
+        );
+
+        $pdf = Pdf::loadView($view, [
             'invoice'       => $invoice,
             'items'         => $items,
             'showQty'       => $items->sum('quantity') !== count($items),
@@ -24,6 +34,6 @@ class InvoiceController extends Controller
             'paymentMethod' => $paymentMethod,
         ]);
 
-        return $pdf->stream($invoice->no.'.pdf');
+        return $pdf->download($invoice->no.'.pdf');
     }
 }

@@ -10,7 +10,7 @@
                 <td class="text-left">
                     <p>Transfer</p>
                     <p>{{$invoice->due_date->format('Y-m-d')}}</p>
-                    <p>{{$paymentMethod->data->bankName}}<br>{{$paymentMethod->data->accountNumber}}</p>
+                    <p>{{$paymentMethod->data?->bankName}}<br>{{$paymentMethod->data?->accountNumber}}</p>
                 </td>
             </tr>
         </table>

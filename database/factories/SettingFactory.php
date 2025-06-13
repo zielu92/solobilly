@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\Setting;
+use Outerweb\Settings\Models\Setting;
+
 
 class SettingFactory extends Factory
 {

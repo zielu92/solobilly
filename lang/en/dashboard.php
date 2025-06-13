@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'data_filter'   => 'Data Filter',
+    'start_date'    => 'Start Date',
+    'end_date'      => 'End Date',
+    'gross'         => 'Gross',
+    'net'           => 'Net',
+    'type'          => 'Type',
+    'status'        => 'Status',
+    'holidays'      => 'Holidays',
+    'holidays_not_found' => 'No Holidays Found',
+    'holiday'       => 'Holiday',
+    'date'          => 'Date',
+    'day'           => 'Day',
+    'country'       => [
+        'Poland'        => 'Poland',
+        'USA'           => 'USA',
+        'UnitedKingdom' => 'UK',
+        'Germany'       => 'Germany',
+        'France'        => 'France',
+        'Italy'         => 'Italy',
+        'Spain'         => 'Spain',
+        'Netherlands'   => 'Netherlands',
+        'Switzerland'   => 'Switzerland',
+        'Sweden'        => 'Sweden',
+    ],
+    'est_invoice_net'   => "Estimated Invoice Value",
+    'est_costs_net'     => "Estimated Costs Value",
+    'est_tax_value'     => "Estimated Taxes Value",
+    'paid'              => "Paid",
+    "not_paid"          => "Not Paid",
+];

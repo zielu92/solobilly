@@ -13,5 +13,15 @@ return [
     'postal_code'   => 'Kod pocztowy',
     'country'       => 'Kraj',
     'regon'         => 'Regon',
-    'krs'           => 'KRS'
+    'krs'           => 'KRS',
+    'contract_type' => 'Typ rozliczenia',
+    'contract_rate' => 'Stawka rozliczenia',
+    'color'         => 'Domyślny kolor w statystykach',
+    'type'          => [
+        'hourly'    => 'godzinowo',
+        'daily'     => 'dziennie',
+        'weekly'    => 'tygodniowo',
+        'monthly'   => 'mieisęcznie',
+        'other'     => 'inne',
+    ]
 ];

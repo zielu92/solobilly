@@ -2,7 +2,9 @@
 
 namespace Modules\Payments\Payments;
 
+use Modules\Payments\DTO\PdfTemplateData;
 use Modules\Payments\Models\Transfer as TransferModel;
+use Illuminate\Support\Facades\View;
 
 class Cash extends Payment
 {
@@ -13,10 +15,13 @@ class Cash extends Payment
     /**
      * Method which return path of blade template which can be displayed in invoice
      */
-    public function getMethodTemplate(int $id): array | null
+    public function getMethodTemplate(int $id, string $template): PdfTemplateData | null
     {
-        return [
-            'template' => 'payments::cash.default.info',
-        ];
+        $view = 'payments::cash.' . $template . '.info';
+        if (!View::exists($view)) {
+            return new PdfTemplateData('payments::cash.default.info');
+        } else {
+            return new PdfTemplateData($view);
+        }
     }
 }

@@ -41,7 +41,6 @@ class Invoice extends Model
         'parent_id',
         'user_id',
         'comment',
-        'currency',
         'issuer_name',
         'grand_total_net',
         'grand_total_gross',
@@ -51,7 +50,8 @@ class Invoice extends Model
         'due',
         'path',
         'currency_id',
-        'payment_method_id'
+        'payment_method_id',
+        'template'
     ];
 
     /**
@@ -162,9 +162,27 @@ class Invoice extends Model
                 ->columnSpan(2)
                 ->options([
                     'paid' => __('invoices.paid'),
-                    'notpaid' => __('invoices.notpaid'),
+                    'not_paid' => __('invoices.notpaid'),
                 ])
-                ->default('notpaid')
+                ->default('not_paid')
+                ->required(),
+
+            Select::make('buyer_id')
+                ->label(__('invoices.buyer'))
+                ->hidden(function() use ($buyerId) {
+                    return $buyerId !== null;
+                })
+                ->relationship('buyer', 'name')
+                ->columnSpan(2)
+                ->preload()
+                ->live()
+                ->afterStateUpdated(function ($state, callable $set) {
+                    $buyer = Buyer::select('currency_id')->find($state);
+                    if ($buyer && $buyer->currency_id) {
+                        $set('currency_id', $buyer->currency_id);
+                        $set('currency_code', $buyer->currency->code);
+                    }
+                })
                 ->required(),
 
             Select::make('currency_id')
@@ -188,16 +206,6 @@ class Invoice extends Model
                     $currency = Currency::find($defaultCurrencyId);
                     return $currency ? $currency->code : '';
                 }),
-
-            Select::make('buyer_id')
-                ->label(__('invoices.buyer'))
-                ->hidden(function() use ($buyerId) {
-                    return $buyerId !== null;
-                })
-                ->relationship('buyer', 'name')
-                ->columnSpan(2)
-                ->preload()
-                ->required(),
 
             Select::make('payment_method_id')
                 ->label(__('invoices.payment_method'))
@@ -231,8 +239,18 @@ class Invoice extends Model
 
             TextInput::make('comment')
                 ->label(__('invoices.comments'))
-                ->columnSpan(3)
+                ->columnSpan(2)
                 ->nullable(),
+
+            Select::make('template')
+                ->label(__('invoices.template'))
+                ->columnSpan(2)
+                ->default('default')
+                ->options([
+                   'default' => __('invoices.templates.default'),
+                   'default_pl' => __('invoices.templates.default_pl'),
+                   'default_en' => __('invoices.templates.default_en'),
+                ]),
 
             TextInput::make('issuer_name')
                 ->label(__('invoices.issuer_name'))

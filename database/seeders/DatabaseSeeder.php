@@ -4,8 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Chiiya\FilamentAccessControl\Database\Seeders\FilamentAccessControlSeeder;
+use Chiiya\FilamentAccessControl\Enumerators\RoleName;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Env;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,14 +19,20 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CurrencySeeder::class,
             SettingsSeeder::class,
+            FilamentAccessControlSeeder::class,
+            PermissionsAndRolesSeeder::class
         ]);
 
         if(!User::find(1)) {
-            User::factory()->create([
-                'name' => 'Admin',
+            $userDetails = [
+                'first_name' => 'Admin',
                 'email' => Env("FIRST_USER_EMAIL"),
-                'password' => bcrypt(Env("FIRST_USER_PASSWORD"))
-            ]);
+                'password' => bcrypt(Env("FIRST_USER_PASSWORD")),
+                'email_verified_at' => now()
+            ];
+            $user = User::query()->create($userDetails);
+            $user->assignRole(RoleName::SUPER_ADMIN);
+            $user->save();
         }
     }
 }

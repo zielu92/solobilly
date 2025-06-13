@@ -3,6 +3,7 @@
 namespace Modules\Payments\Payments;
 
 use Illuminate\Support\Facades\Config;
+use Modules\Payments\DTO\PdfTemplateData;
 
 abstract class Payment
 {
@@ -113,8 +114,5 @@ abstract class Payment
     /**
      * Method which return path of blade template which can be displayed in invoice
      */
-    public function getMethodTemplate(int $id): array | null
-    {
-        return null;
-    }
+    abstract public function getMethodTemplate(int $id, string $template): PdfTemplateData | null;
 }

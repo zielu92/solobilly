@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
-use http\Env;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Modules\Payments\PaymentMethodsManager;
-use Spatie\Browsershot\Browsershot;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\View;
 
 
 class InvoiceController extends Controller
@@ -15,24 +14,26 @@ class InvoiceController extends Controller
     {
         $invoice = Invoice::with('invoiceItems')->findOrFail($id);
         $items = $invoice->invoiceItems;
-        $template = 'default';
-        $paymentMethod = PaymentMethodsManager::getPaymentMethodTemplate(strtolower($invoice->paymentMethod->method), $invoice->paymentMethod->id);
-        return Pdf::view('invoice.template.' . $template . '.pdf', [
-            'invoice' => $invoice,
-            'items' => $items,
-            'showQty' => $items->sum('quantity') !== count($items),
-            'showDiscount' => $items->sum('total_discount') > 0,
-            'paymentMethod' => $paymentMethod,
-        ])
-            ->format('a4')
-            ->name("#{$invoice->no}")
-            ->withBrowsershot(function (Browsershot $browsershot) {
-                $browsershot
-                    ->setChromePath(Env('CHROME_PATH'))
-                    ->setNodeBinary('/usr/bin/node')
-                    ->setNpmBinary('/usr/bin/npm')
-                    ->noSandbox();
-            });
 
+        $template = View::exists("invoice.template.{$invoice->template}.pdf")
+            ? $invoice->template
+            : 'default';
+
+        $view = "invoice.template.{$template}.pdf";
+        $paymentMethod = PaymentMethodsManager::getPaymentMethodTemplate(
+            strtolower($invoice->paymentMethod->method),
+            $invoice->paymentMethod->id,
+            $template
+        );
+
+        $pdf = Pdf::loadView($view, [
+            'invoice'       => $invoice,
+            'items'         => $items,
+            'showQty'       => $items->sum('quantity') !== count($items),
+            'showDiscount'  => $items->sum('total_discount') > 0,
+            'paymentMethod' => $paymentMethod,
+        ]);
+
+        return $pdf->download($invoice->no.'.pdf');
     }
 }

@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
+use App\Enum\TypeOfContract;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -28,6 +33,10 @@ class Buyer extends Model
         'nip',
         'regon',
         'krs',
+        'contract_type',
+        'contract_rate',
+        'color',
+        'currency_id'
     ];
 
     /**
@@ -38,6 +47,11 @@ class Buyer extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class);
+    }
 
     public static function getForm(): array
     {
@@ -88,6 +102,27 @@ class Buyer extends Model
                 ->label(__('buyers.krs'))
                 ->maxLength(255)
                 ->default(null),
+            ColorPicker::make('color')
+                ->label(__('buyers.color'))
+                ->default(randomColorHex()),
+            Select::make('contract_type')
+                ->label(__('buyers.contract_type'))
+                ->options(TypeOfContract::class)
+                ->live(),
+            TextInput::make('contract_rate')
+                ->label(__('buyers.contract_rate'))
+                ->numeric()
+                ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER->value || $get('contract_type')==null)
+                ->default(null),
+            Select::make('currency_id')
+                ->label(__('invoices.currency'))
+                ->columnSpan(1)
+                ->live()
+                ->options(
+                    Currency::whereIn('id', setting('general.currencies'))->get()->pluck('code', 'id')
+                )
+                ->default(Currency::find(setting('general.default_currency'))->id)
+                ->required()
         ];
     }
 }

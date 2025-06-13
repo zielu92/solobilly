@@ -3,32 +3,37 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Backups;
+use App\Filament\Pages\Settings;
 use App\Filament\Resources\BuyerResource;
 use App\Filament\Resources\CostCategoryResource;
 use App\Filament\Resources\CostResource;
 use App\Filament\Resources\InvoiceResource;
-use App\Models\CostCategory;
+use App\Filament\Resources\WorkLogResource;
+use App\Filament\Widgets\InvoiceCostsStatWidget;
+use Chiiya\FilamentAccessControl\FilamentAccessControlPlugin;
+use Chiiya\FilamentAccessControl\Resources\FilamentUserResource;
+use Chiiya\FilamentAccessControl\Resources\PermissionResource;
+use Chiiya\FilamentAccessControl\Resources\RoleResource;
 use Coolsam\Modules\ModulesPlugin;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use App\Filament\Pages\Settings;
 use Filament\Support\Colors\Color;
-use Filament\Navigation\NavigationGroup;
-use Filament\Http\Middleware\Authenticate;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Filament\Http\Middleware\AuthenticateSession;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Modules\ExchangeRates\Filament\Resources\ExchangeRateResource;
+use Modules\ExchangeRates\Filament\Widgets\ExchangeRatesWidget;
 use Modules\Payments\Filament\Resources\PaymentMethodResource;
 use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
@@ -36,26 +41,13 @@ use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 class AppPanelProvider extends PanelProvider
 {
     /**
-     * Configures and returns the application's Filament panel.
+     * Configures and returns the application's Filament panel with custom branding, navigation, resources, middleware, and plugins.
      *
-     * Applies default settings to the provided Panel instance, including enabling global search,
-     * setting the brand ('Solo Billy'), defining the panel ID and path, and enabling login.
-     * The method also establishes resource, page, and widget discovery from designated directories,
-     * and registers the main dashboard page.
+     * Sets up the panel with global search, a custom brand name, primary color, authentication, and resource discovery. Defines a structured navigation menu with dashboard, invoices, costs, and settings groups. Registers middleware for session, authentication, and CSRF protection, enables a collapsible sidebar, and adds plugins for backups, modules, and settings management.
      *
-     * Navigation is structured into groups:
-     * - A Dashboard item linking to the main dashboard.
-     * - An Invoices group containing navigation from invoice and buyer resources.
-     * - A Costs group with navigation from cost and cost category resources.
-     * - A Settings group (collapsed by default) including items for settings, backups,
-     *   payment methods, and exchange rates.
-     *
-     * Additionally, middleware for session management, CSRF protection, and authentication is set,
-     * the sidebar is made collapsible on desktop, and plugins for backups, module management, and settings are registered.
-     *
-     * @param Panel $panel The panel instance to be configured.
-     *
-     * @return Panel The fully configured Panel instance.
+     * @param Panel $panel The Filament panel instance to configure.
+     * @return Panel The configured Filament panel instance.
+     * @throws \Exception
      */
     public function panel(Panel $panel): Panel
     {
@@ -63,7 +55,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->globalSearch()
             ->brandName('Solo Billy')
-            ->id('app')
+            ->id('admin')
             ->path('/')
             ->login()
             ->colors([
@@ -72,7 +64,7 @@ class AppPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
@@ -86,7 +78,8 @@ class AppPanelProvider extends PanelProvider
                             ->label(__('nav.invoices'))
                             ->items([
                                 ...InvoiceResource::getNavigationItems(),
-                                ...BuyerResource::getNavigationItems()
+                                ...BuyerResource::getNavigationItems(),
+                                ...WorkLogResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('Costs')->icon('heroicon-o-fire')
                             ->label(__('nav.costs'))
@@ -103,11 +96,19 @@ class AppPanelProvider extends PanelProvider
                                 ...PaymentMethodResource::getNavigationItems(),
                                 ...ExchangeRateResource::getNavigationItems(),
                             ]),
+                        NavigationGroup::make('Users')->icon('heroicon-o-users')
+                            ->label(__('nav.users'))
+                            ->collapsed()
+                            ->items([
+                                ...FilamentUserResource::getNavigationItems(),
+                                ...RoleResource::getNavigationItems(),
+                            ])
                     ]);
             })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-
+                InvoiceCostsStatWidget::class,
+                ExchangeRatesWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -125,6 +126,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->sidebarCollapsibleOnDesktop()
             ->plugins([
+                FilamentAccessControlPlugin::make(),
                 FilamentSpatieLaravelBackupPlugin::make(),
                 ModulesPlugin::make(),
                 FilamentSettingsPlugin::make()

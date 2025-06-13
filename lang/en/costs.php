@@ -6,7 +6,8 @@ return [
     'cost_category'=> 'Cost Category',
     'cost_categories'=> 'Cost Categories',
     'name'         => 'Name',
-    'amount'       => 'Amount',
+    'amount'       => 'Amount net',
+    'amount_gross' => 'Amount gross',
     'description' => 'Description',
     'date'         => 'Date',
     'category'     => 'Category',
@@ -22,4 +23,7 @@ return [
     'month'        => 'This month',
     'week'         => 'Last week',
     'year'         => 'This year',
-    ];
+    'download_receipt' => 'Download Receipt File',
+    'download_invoice' => 'Download Invoice File',
+    'percent_deductible_from_taxes' => 'Tax Deductible Percentage',
+];

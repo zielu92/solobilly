@@ -4,11 +4,12 @@ namespace Modules\ExchangeRates\Console;
 
 use App\Models\Currency;
 use Carbon\Carbon;
+use Date;
 use Illuminate\Console\Command;
 use Modules\ExchangeRates\Models\ExchangeRate;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use MaciejSz\Nbp\Service\CurrencyAverageRatesService;
+use Yasumi\Yasumi;
+
 class CheckExchangeRates extends Command
 {
     /**
@@ -32,58 +33,70 @@ class CheckExchangeRates extends Command
     {
         //NBP only for PLN
         if(Currency::select('code')->find(setting('general.default_currency'))->code=='PLN') {
-            $rateDate = $this->getLastWorkday()->format('Y-m-d');
-            $this->info('NBP averages rates for '.$rateDate);
+            $endDate = Carbon::now()->startOfDay();
+            $startDate = Carbon::now()->subDays(7);
             $currencyAverages = CurrencyAverageRatesService::new();
-            $currencies = Currency::select('code')->whereIn('id', setting('general.currencies'))->get();
+            $currencies = Currency::select('code', 'id')
+                ->where('code', '!=', 'PLN')
+                ->whereIn('id', setting('general.currencies'))
+                ->get();
+            $plnCurrency = Currency::whereCode('PLN')->firstOrFail();
             foreach ($currencies as $currency) {
-                if($currency->code=='PLN') continue;
-                try {
-                    $rate = $currencyAverages
-                        ->fromDay($rateDate)
-                        ->fromTable('A')
-                        ->getRate($currency->code);
-                    ExchangeRate::updateOrCreate([
-                        'type'          => 'Auto',
-                        'currency'      => $currency->code,
-                        'base_currency' => 'PLN',
-                        'date'          => $rateDate,
-                    ],[
-                        'value'         => $rate->getValue(),
-                        'source'        => 'NBP'
-                    ]);
-                    $this->info($rate->getValue(). ' '.$currency->code.'/PLN');
-                } catch (\Exception $e) {
-                    $this->error("cannot fetch rates for ".$currency->code);
-                }
+                $dateIterator = clone $startDate;
+                for(; $dateIterator <= $endDate; $dateIterator->addDay()) {
+                    $iDate = $dateIterator->format('Y-m-d');
+                    $this->info(sprintf('NBP averages rates for %s', $iDate));
+                    try {
+                        $rate = $currencyAverages
+                            ->fromDay($iDate)
+                            ->fromTable('A')
+                            ->getRate($currency->code);
 
+                        ExchangeRate::updateOrCreate([
+                            'type' => 'Auto',
+                            'currency_id' => $currency->id,
+                            'base_currency_id' => $plnCurrency->id,
+                            'date' => $iDate,
+                        ], [
+                            'value' => $rate->getValue(),
+                            'source' => 'NBP'
+                        ]);
+                        $this->info(sprintf("%f %s/PLN", $rate->getValue(), $currency->code));
+                    } catch (\Exception $e) {
+                        $this->error($e->getMessage());
+                        $this->error(sprintf("cannot fetch rates for %s, for date %s", $currency->code, $iDate));
+                    }
+                }
             }
         }
     }
 
     /**
-     * Returns the last workday date, adjusting for weekends.
+     * Determines the most recent workday before today, excluding weekends and Polish public holidays.
      *
-     * This method computes yesterday's date and, if it falls on Saturday or Sunday,
-     * adjusts the result to the preceding Friday. Note: Holidays are not considered.
+     * Calculates yesterday's date and iteratively subtracts days if the date falls on a weekend or matches a public holiday in Poland, ensuring the returned date is a valid workday.
      *
-     * @return \Carbon\Carbon The last workday date.
+     * @return \Carbon\Carbon The last valid workday date.
      */
     private function getLastWorkday()
     {
-        //todo: consider also a holidays...
-        $yesterday = Carbon::yesterday();
+        $date = Carbon::yesterday();
+        $year = $date->year;
 
-        // If yesterday was Saturday, get last Friday
-        if ($yesterday->isSaturday()) {
-            return $yesterday->subDays(1);
+        $holidays = Yasumi::create('Poland', $year);
+        $holidayDates = array_map(function ($holidayDate) {
+            return ($holidayDate instanceof \DateTimeInterface)
+                ? $holidayDate->format('Y-m-d')
+                : (string) $holidayDate;
+        }, $holidays->getHolidayDates());
+
+        while (
+            $date->isWeekend() ||
+            in_array($date->format('Y-m-d'), $holidayDates, true)
+        ) {
+            $date->subDay();
         }
 
-        // If yesterday was Sunday, get last Friday
-        if ($yesterday->isSunday()) {
-            return $yesterday->subDays(2);
-        }
-
-        return $yesterday;
+        return $date;
     }
 }

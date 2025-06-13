@@ -10,5 +10,7 @@ return [
     'base_currency' => 'Waluta bazowe',
     'source' => 'Żródło',
     'fetch' => 'Pobierz kursy walut',
-    'notification_fetch' => 'Rozpoczęto pobieranie kursów z ostatniego dnia roboczego'
+    'notification_fetch' => 'Rozpoczęto pobieranie kursów z ostatniego dnia roboczego',
+    'date_from' => 'Data od',
+    'date_to' => 'Data do',
 ];

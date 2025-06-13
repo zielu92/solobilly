@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Models\Currency;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Invoice;
@@ -37,10 +38,6 @@ class InvoiceResource extends Resource
             ->schema(Invoice::getForm());
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
@@ -84,6 +81,7 @@ class InvoiceResource extends Resource
             ])
             ->actions([
                 Action::make('Download PDF')
+                    ->visible(fn () => Filament::auth()->user()->can('invoice.view'))
                     ->icon('heroicon-o-document-text')
                     ->label(__('invoices.download'))
                     ->url(fn ($record) => URL::route('invoices.show', $record->id))
@@ -104,6 +102,18 @@ class InvoiceResource extends Resource
         return [
 
         ];
+    }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        $unpaid =  Invoice::where('payment_status', 'not_paid')->count();
+        return $unpaid > 0 ? $unpaid : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'danger';
     }
 
 

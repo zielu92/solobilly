@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Buyer;
 use App\Models\Invoice;
 use App\Models\User;
+use Modules\Payments\Models\PaymentMethodModel;
 
 class InvoiceFactory extends Factory
 {
@@ -25,17 +26,23 @@ class InvoiceFactory extends Factory
         return [
             'no' => fake()->word(),
             'buyer_id' => Buyer::factory(),
-            'type' => fake()->word(),
-            'status' => fake()->word(),
-            'payment_status' => fake()->word(),
+            'type' => fake()->randomElement([
+                'regular',
+                'proforma',
+                'draft',
+                'cancelled'
+            ]),
+            'payment_status' => fake()->randomElement([
+                'paid',
+                'not_paid'
+            ]),
             'place' => fake()->word(),
             'sale_date' => fake()->date(),
             'due_date' => fake()->date(),
-            'issue_date' => fake()->word(),
-            'parent_id' => Invoice::factory(),
+            'issue_date' => fake()->date(),
             'user_id' => User::factory(),
             'comment' => fake()->word(),
-            'currency' => fake()->word(),
+            'currency_id' => Currency::inRandomOrder()->first()->id,
             'issuer_name' => fake()->word(),
             'grand_total_net' => fake()->randomFloat(2, 0, 99999999.99),
             'grand_total_gross' => fake()->randomFloat(2, 0, 99999999.99),
@@ -43,7 +50,7 @@ class InvoiceFactory extends Factory
             'grand_total_discount' => fake()->randomFloat(2, 0, 99999999.99),
             'paid' => fake()->randomFloat(2, 0, 99999999.99),
             'due' => fake()->randomFloat(2, 0, 99999999.99),
-            'path' => fake()->word(),
+            'payment_method_id' => PaymentMethodModel::factory(),
         ];
     }
 }

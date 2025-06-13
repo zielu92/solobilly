@@ -1,10 +1,7 @@
 created:
-    - database/factories/CostFactory.php
-    - database/factories/CostCategoryFactory.php
-    - database/migrations/2025_03_01_175536_create_costs_table.php
-    - database/migrations/2025_03_01_175537_create_cost_categories_table.php
-    - app/Models/Cost.php
-    - app/Models/CostCategory.php
+    - database/factories/WorkLogFactory.php
+    - database/migrations/2025_05_16_215451_create_work_logs_table.php
+    - app/Models/WorkLog.php
 models:
     User: {  }
     Invoice: { 'no': string, buyer_id: 'id foreign:buyers', type: string, status: string, payment_status: string, place: 'string nullable', sale_date: 'date nullable', due_date: 'date nullable', issue_date: string, parent_id: 'id nullable foreign:invoices', user_id: 'id foreign:users', comment: 'string nullable', currency: 'string length:4 default:EUR', issuer_name: 'string nullable', grand_total_net: 'decimal:10,2 default:0', grand_total_gross: 'decimal:10,2 default:0', grand_total_tax: 'decimal:10,2 default:0', grand_total_discount: 'decimal:10,2 default:0', paid: 'decimal:10,2 default:0', due: 'decimal:10,2 default:0', path: 'string nullable', timestamps: timestamps }
@@ -14,3 +11,4 @@ models:
     Cost: { name: string, amount: 'decimal:10,2', description: 'text nullable', date: date, category_id: 'id foreign:cost_categories.id', invoice_number: 'string nullable', invoice_file_path: 'string nullable', receipt_file_path: 'string nullable', invoice_date: 'date nullable', invoice_due_date: 'date nullable', is_paid: 'boolean default:false', payment_date: 'date nullable', user_id: 'id foreign:users.id', timestamps: timestamps, softdeletes: softDeletes }
     CostCategory: { name: 'string unique', description: 'text nullable', color: 'string nullable', is_tax_related: 'boolean default:false', timestamps: timestamps }
     CostPaymentMethod: { name: 'string unique', description: 'text nullable', is_default: 'boolean default:false', timestamps: timestamps }
+    WorkLog: { buyer_id: 'id foreign:buyers', start: datetime, end: datetime, description: string }

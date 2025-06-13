@@ -56,27 +56,33 @@ models:
 #    timestamps: true
 #    softDeletes: true
 #
-  Cost:
-    name: string
-    amount: decimal:10,2
-    description: text nullable
-    date: date
-    category_id: id foreign:cost_categories.id
-    invoice_number: string nullable
-    invoice_file_path: string nullable
-    receipt_file_path: string nullable
-    invoice_date: date nullable
-    invoice_due_date: date nullable
-    is_paid: boolean default:false
-    payment_date: date nullable
-    user_id: id foreign:users.id
-    timestamps: true
-    softDeletes: true
+#  Cost:
+#    name: string
+#    amount: decimal:10,2
+#    description: text nullable
+#    date: date
+#    category_id: id foreign:cost_categories.id
+#    invoice_number: string nullable
+#    invoice_file_path: string nullable
+#    receipt_file_path: string nullable
+#    invoice_date: date nullable
+#    invoice_due_date: date nullable
+#    is_paid: boolean default:false
+#    payment_date: date nullable
+#    user_id: id foreign:users.id
+#    timestamps: true
+#    softDeletes: true
+#
+#  CostCategory:
+#    name: string unique
+#    description: text nullable
+#    color: string nullable # For UI visualization
+#    is_tax_related: boolean default:false
+#    timestamps: true
 
-  CostCategory:
-    name: string unique
-    description: text nullable
-    color: string nullable # For UI visualization
-    is_tax_related: boolean default:false
-    timestamps: true
+  WorkLog:
+    buyer_id: id foreign:buyers
+    start: datetime
+    end: datetime
+    description: string
 

@@ -10,13 +10,6 @@ class ListCosts extends ListRecords
 {
     protected static string $resource = CostResource::class;
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            CostResource\Widgets\CostsChartWidget::class
-        ];
-    }
-
     protected function getHeaderActions(): array
     {
         return [

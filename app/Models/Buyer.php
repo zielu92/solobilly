@@ -46,6 +46,7 @@ class Buyer extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'contract_type' => TypeOfContract::class,
     ];
 
     public function currency(): BelongsTo
@@ -106,13 +107,15 @@ class Buyer extends Model
                 ->label(__('buyers.color'))
                 ->default(randomColorHex()),
             Select::make('contract_type')
+                ->required()
                 ->label(__('buyers.contract_type'))
                 ->options(TypeOfContract::class)
+                ->default(TypeOfContract::OTHER)
                 ->live(),
             TextInput::make('contract_rate')
                 ->label(__('buyers.contract_rate'))
                 ->numeric()
-                ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER->value || $get('contract_type')==null)
+                ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER || $get('contract_type')==null)
                 ->default(null),
             Select::make('currency_id')
                 ->label(__('invoices.currency'))

@@ -46,6 +46,7 @@ class Buyer extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'contract_type' => TypeOfContract::class,
     ];
 
     public function currency(): BelongsTo

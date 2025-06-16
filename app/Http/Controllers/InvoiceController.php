@@ -34,6 +34,6 @@ class InvoiceController extends Controller
             'paymentMethod' => $paymentMethod,
         ]);
 
-        return $pdf->download($invoice->no.'.pdf');
+        return $pdf->download(str_replace(array("/", "\\", ":", "*", "?", "«", "<", ">", "|"), "-",$invoice->no).'.pdf');
     }
 }

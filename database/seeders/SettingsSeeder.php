@@ -14,8 +14,10 @@ class SettingsSeeder extends Seeder
      */
     public function run(): void
     {
-        $settings = Setting::first();
-        if(!$settings) {
+        if (! Setting::whereIn('key', [
+            'general.currencies',
+            'general.default_currency'
+        ])->exists()) {
             DB::table('settings')->insert([
                 [
                     'key' => 'general.currencies',

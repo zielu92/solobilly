@@ -611,7 +611,10 @@ class CurrencySeeder extends Seeder
         );
 
         foreach ($currencies as $currency) {
-            Currency::updateOrCreate($currency);
+            Currency::updateOrCreate(
+                ['code' => $currency['code']],
+                $currency
+            );
         }
     }
 }

@@ -103,9 +103,9 @@ class Cost extends Model
                 ->required()
                 ->live()
                 ->numeric()
-                ->maxValue(0)
+                ->minValue(0)
                 ->afterStateUpdated(fn($state, callable $set, callable $get) =>
-                $set('amount_gross', is_numeric($get('amount')) ? $get('amount')*1.23 : 0)
+                $set('amount_gross', round(is_numeric($get('amount')) ? $get('amount') * 1.23 : 0, 2))
                 ),
             Select::make('currency_id')
                 ->label(__('invoices.currency'))
@@ -120,6 +120,7 @@ class Cost extends Model
             TextInput::make('amount_gross')
                 ->label(__('costs.amount_gross'))
                 ->required()
+                ->minValue(0)
                 ->live()
                 ->numeric(),
             TextInput::make('percent_deductible_from_taxes')

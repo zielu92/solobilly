@@ -1,5 +1,5 @@
 services:
-    laravel.solobilly:
+    laravel.test:
         build:
             context: './docker/8.4'
             dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
-            - '/volume1/docker/solobilly/storage:/var/www/html/storage'
+            - '.:/var/www/html'
         networks:
             - sail
         depends_on:
@@ -36,7 +36,8 @@ services:
         MYSQL_PASSWORD: '${DB_PASSWORD}'
         MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
       volumes:
-        - '/volume1/docker/solobilly/mysql-data:/var/lib/mysql'
+        - 'sail-mariadb:/var/lib/mysql'
+        - './vendor/laravel/sail/database/mariadb/create-testing-database.sh:/data/compose/37/vendor/laravel/sail/database/mariadb/create-testing-database.sh'
       networks:
         - sail
       healthcheck:

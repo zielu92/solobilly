@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Outerweb\Settings\Models\Setting;
 
 class SettingsSeeder extends Seeder
 {
@@ -13,19 +14,22 @@ class SettingsSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('settings')->insert([
-            [
-                'key' => 'general.currencies',
-                'value' => json_encode(["35", "84", "109"]),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'key' => 'general.default_currency',
-                'value' => "84",
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
+        $settings = Setting::first();
+        if(!$settings) {
+            DB::table('settings')->insert([
+                [
+                    'key' => 'general.currencies',
+                    'value' => json_encode(["35", "84", "109"]),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'key' => 'general.default_currency',
+                    'value' => "84",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            ]);
+        }
     }
 }

@@ -19,7 +19,6 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '/volume1/docker/solobilly/storage:/var/www/html/storage'
-            - '/volume1/docker/solobilly/.env:/var/www/html/.env'
         networks:
             - sail
         depends_on:

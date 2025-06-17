@@ -43,16 +43,16 @@ class CostResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('amount_gross')
                     ->label(__('costs.amount_gross'))
-                    ->numeric()
+                    ->formatStateUsing(fn (string $state): string => number_format($state, 2, ','))
                     ->sortable(),
+                Tables\Columns\TextColumn::make('currency.code')
+                    ->label(__('invoices.currency')),
                 Tables\Columns\TextColumn::make('percent_deductible_from_taxes')
                     ->label(__('costs.percent_deductible_from_taxes'))
                     ->numeric()
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => $state.'%')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('currency.code')
-                    ->label(__('invoices.currency')),
                 Tables\Columns\TextColumn::make('category.name')
                     ->label(__('costs.cost_category'))
                     ->numeric()

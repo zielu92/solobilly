@@ -23,5 +23,7 @@ return [
     'month'        => 'Ten miesiąc',
     'week'         => 'Ostatni tydzeń',
     'year'         => 'Ten rok',
+    'download_receipt' => 'Pobierz skan rachunku',
+    'download_invoice' => 'Pobierz fakture',
     'percent_deductible_from_taxes' => 'Procent możliwy do odliczenia od podatku',
 ];

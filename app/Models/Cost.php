@@ -169,7 +169,10 @@ class Cost extends Model
                     fn ($state) => $state
                         ? Action::make('download_invoice')
                             ->label(__('costs.download_invoice'))
-                            ->action(fn () => Storage::download($state))
+                            ->action(function () use ($state) {
+                                $filePath = is_array($state) ? reset($state) : $state;
+                                return Storage::download($filePath);
+                            })
                         : null
                 )
                 ->visibility('private')
@@ -183,7 +186,10 @@ class Cost extends Model
                     fn ($state) => $state
                         ? Action::make('download_receipt')
                             ->label(__('costs.download_receipt'))
-                            ->action(fn() => Storage::download($state))
+                            ->action(function () use ($state) {
+                                $filePath = is_array($state) ? reset($state) : $state;
+                                return Storage::download($filePath);
+                            })
                         : null
                 )
                 ->visibility('private')

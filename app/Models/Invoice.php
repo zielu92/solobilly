@@ -120,15 +120,15 @@ class Invoice extends Model
                     $defaultNumberFormat = setting('invoice.default_pattern');
                     if($defaultNumberFormat) {
                         $now = Carbon::now();
-                        $month = $now->format('m');
+                        $month = $now->format('n');
                         $year = $now->format('Y');
 
                         $previousThisMonth = Invoice::query()
-                                ->whereMonth('created_at', $month)
-                                ->whereYear('created_at', $year)
+                                ->whereMonth('issue_date', $month)
+                                ->whereYear('issue_date', $year)
                                 ->count() + 1;
                         $previousThisYear = Invoice::query()
-                                ->whereYear('created_at', $year)
+                                ->whereYear('issue_date', $year)
                                 ->count() + 1;
 
                         $random = Str::random(5);

@@ -118,6 +118,7 @@ class WorkLogResource extends Resource
                     ->limit(50)
                     ->searchable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('buyer')
                     ->relationship('buyer', 'name')

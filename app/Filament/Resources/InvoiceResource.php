@@ -79,6 +79,7 @@ class InvoiceResource extends Resource
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Action::make('Download PDF')
                     ->visible(fn () => Filament::auth()->user()->can('invoice.view'))

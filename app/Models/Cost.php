@@ -97,7 +97,32 @@ class Cost extends Model
                 ->label(__('costs.name'))
                 ->required()
                 ->maxLength(255)
-                ->columnSpanFull(),
+                ->columnSpanFull()
+                ->columnSpan(1),
+            Select::make('category_id')
+                ->label(__('costs.category'))
+                ->live()
+                ->relationship('category', 'name')
+                ->required()
+                ->afterStateHydrated(function ($state, $set, $get) {
+                    // Initialize on edit - check the selected category when form loads
+                    if ($state) {
+                        $isTaxRelated = \App\Models\CostCategory::find($state)?->is_tax_related ?? true;
+                        $set('is_category_tax_related', $isTaxRelated);
+                    } else {
+                        $set('is_category_tax_related', true);
+                    }
+                })
+                ->afterStateUpdated(function ($state, $set, $get) {
+                    // Store the is_tax_related value in a hidden field for reference
+                    if ($state) {
+                        $isTaxRelated = \App\Models\CostCategory::find($state)?->is_tax_related ?? true;
+                        $set('is_category_tax_related', $isTaxRelated);
+                        $set('percent_deductible_from_taxes', 0);
+                    } else {
+                        $set('is_category_tax_related', true);
+                    }
+                }),
             TextInput::make('amount')
                 ->label(__('costs.amount'))
                 ->required()
@@ -137,20 +162,6 @@ class Cost extends Model
             DatePicker::make('date')
                 ->label(__('costs.date'))
                 ->required(),
-            Select::make('category_id')
-                ->label(__('costs.category'))
-                ->live()
-                ->relationship('category', 'name')
-                ->required()
-                ->afterStateUpdated(function ($state, $set, $get) {
-                    // Store the is_tax_related value in a hidden field for reference
-                    if ($state) {
-                        $isTaxRelated = \App\Models\CostCategory::find($state)?->is_tax_related ?? true;
-                        $set('is_category_tax_related', $isTaxRelated);
-                    } else {
-                        $set('is_category_tax_related', true);
-                    }
-                }),
             Hidden::make('is_category_tax_related')
                 ->default(true),
             TextInput::make('invoice_number')

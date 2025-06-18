@@ -35,7 +35,8 @@ class HolidayWidget extends Widget
 
     protected $listeners = [
         'refreshHolidays' => 'loadHolidays',
-        'filament.pageFilterUpdated' => 'handleFilterUpdated'
+        'filament.pageFilterUpdated' => 'handleFilterUpdated',
+        'onCountryChanged' => 'loadHolidays',
     ];
 
     /**
@@ -45,9 +46,7 @@ class HolidayWidget extends Widget
      */
     public function mount()
     {
-        // Safely access filters
-        $startDate = $this->filters['startDate'] ?? null;
-        $this->year = $startDate ? Carbon::parse($startDate)->format('Y') : now()->year;
+        $this->loadYear();
         $this->country = 'Poland';
         $this->loadHolidays();
     }
@@ -55,9 +54,17 @@ class HolidayWidget extends Widget
     /**
      * Reloads the list of holidays when the selected country changes.
      */
-    public function updatedCountry()
+    public function updatedCountry($value)
     {
+        $this->loadYear();
+        $this->country = $value;
         $this->loadHolidays();
+        $this->dispatch('refreshComponent');
+    }
+
+    private function loadYear() {
+        $startDate = $this->filters['startDate'] ?? null;
+        $this->year = $startDate ? Carbon::parse($startDate)->format('Y') : now()->year;
     }
 
     /**

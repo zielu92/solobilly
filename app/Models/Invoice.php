@@ -179,7 +179,7 @@ class Invoice extends Model
                 ->preload()
                 ->live()
                 ->afterStateUpdated(function ($state, callable $set) {
-                    $buyer = Buyer::select('currency_id')->find($state);
+                    $buyer = Buyer::select('currency_id')->with('currency')->find($state);
                     if ($buyer && $buyer->currency_id) {
                         $set('currency_id', $buyer->currency_id);
                         $set('currency_code', $buyer->currency->code);
@@ -504,7 +504,7 @@ class Invoice extends Model
     public static  function getModal($state): Action|null
     {
         if ($state) {
-            $buyer = Buyer::select('contract_type', 'contract_rate', 'currency_id', 'name')->find($state);
+            $buyer = Buyer::select('contract_type', 'contract_rate', 'currency_id', 'name')->with('currency')->find($state);
             if ($buyer->contract_type === TypeOfContract::DAILY || $buyer->contract_type === TypeOfContract::HOURLY) {
                 //load the values for specific buyer
                 $displayRates = $buyer->contract_type !== TypeOfContract::OTHER;

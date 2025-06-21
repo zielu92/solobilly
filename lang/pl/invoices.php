@@ -57,6 +57,6 @@ return [
     'days'              => 'dni',
     'default_rates'     => 'Domyślne stawki dla',
     'calculations'      => 'Obliczenia',
-    'worklogs'          => 'Przeliczanie dzienniku pracy',
+    'worklogs'          => 'Przeliczanie dziennika pracy',
     'worklogs_label'    => 'Przelicz'
 ];

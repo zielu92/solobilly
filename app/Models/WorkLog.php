@@ -57,7 +57,7 @@ class WorkLog extends Model
         return number_format($this->start->diffInSeconds($this->end) / 3600, 2, '.', '');
     }
 
-    public static function calculateTotalHoursBetweenDates($startDate, $endDate): float
+    public static function calculateTotalHoursBetweenDates($startDate, $endDate): string
     {
         if (!$startDate || !$endDate) {
             return '0.00';

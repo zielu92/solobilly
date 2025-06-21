@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enum\TypeOfContract;
 use Carbon\Carbon;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Get;
 use Filament\Forms\Components\Select;
@@ -183,6 +185,11 @@ class Invoice extends Model
                         $set('currency_code', $buyer->currency->code);
                     }
                 })
+                ->hintAction(
+                    function($state) {
+                        return self::getModal($state);
+                    }
+                )
                 ->required(),
 
             Select::make('currency_id')
@@ -261,6 +268,7 @@ class Invoice extends Model
             Repeater::make('items')
                 ->label(__('invoices.invoice_items'))
                 ->columnSpanFull()
+                ->defaultItems(0)
                 ->reorderableWithButtons()
                 ->columns(12)
                 ->schema([
@@ -395,6 +403,20 @@ class Invoice extends Model
             ];
     }
 
+    private static function updateWorklogCalculations($startDate, $endDate, $contractType, callable $set): void
+    {
+        if (!$startDate || !$endDate) {
+            $set('worklog_amount', '0.00');
+        }
+
+        if ($contractType === TypeOfContract::DAILY) {
+            $days = Worklog::calculateWorkingDaysBetweenDates($startDate, $endDate);
+            $set('worklog_amount', $days . ' working days');
+        } else {
+            $hours = Worklog::calculateTotalHoursBetweenDates($startDate, $endDate);
+            $set('worklog_amount', $hours . ' hours');
+        }
+    }
 
     public static function updateTotals(callable $set, callable $get): array
     {
@@ -477,5 +499,123 @@ class Invoice extends Model
         $set('grand_total_tax', $totalTax);
         $set('grand_total_gross', $totalGross);
         $set('grand_total_discount', $totalDiscount);
+    }
+
+    public static  function getModal($state): Action|null
+    {
+        if ($state) {
+            $buyer = Buyer::select('contract_type', 'contract_rate', 'currency_id', 'name')->find($state);
+            if ($buyer->contract_type === TypeOfContract::DAILY || $buyer->contract_type === TypeOfContract::HOURLY) {
+                //load the values for specific buyer
+                $displayRates = $buyer->contract_type !== TypeOfContract::OTHER;
+                $description = sprintf('%s %s %s %s/%s', __('invoices.default_rates'), $buyer->name, number_format($buyer->contract_rate, 2, ','), $buyer->currency->code, $buyer->contract_type->getLabel());
+                //todo: advanced tariffs
+                return Action::make('worklogs')
+                    ->modalHeading(__('invoices.worklogs'))
+                    ->label(__('invoices.worklogs_label'))
+                    ->modalDescription($displayRates ? $description : "")
+                    ->form([
+                        Section::make()
+                            ->columns(2)
+                            ->schema([
+                                DatePicker::make('start_date')
+                                    ->label(__('invoices.start_period'))
+                                    ->default(Carbon::now()->startOfMonth())
+                                    ->columnSpan(1)
+                                    ->nullable()
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        self::updateWorklogCalculations($state, $get('end_date'), $get('contract_type'), $set);
+                                    }),
+
+                                DatePicker::make('end_date')
+                                    ->label(__('invoices.end_period'))
+                                    ->default(now())
+                                    ->columnSpan(1)
+                                    ->nullable()
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        self::updateWorklogCalculations($get('start_date'), $state, $get('contract_type'), $set);
+                                    }),
+                            ]),
+                        Section::make(__('invoices.calculations'))
+                            ->columns(7)
+                            ->schema([
+                                Placeholder::make('worklog_amount')
+                                    ->hiddenLabel()
+                                    ->content(function (callable $get) use ($buyer) {
+                                        $startDate = $get('start_date');
+                                        $endDate = $get('end_date');
+
+                                        if (!$startDate || !$endDate) {
+                                            return '0';
+                                        }
+
+                                        if ($buyer->contract_type === TypeOfContract::DAILY) {
+                                            $days = Worklog::calculateWorkingDaysBetweenDates($startDate, $endDate);
+                                            return $days;
+                                        } else {
+                                            $hours = Worklog::calculateTotalHoursBetweenDates($startDate, $endDate);
+                                            return $hours;
+                                        }
+                                    }),
+                                Placeholder::make('worklog_units')
+                                    ->hiddenLabel()
+                                    ->content(function (callable $get) use ($buyer) {
+                                        if ($buyer->contract_type === TypeOfContract::DAILY) {
+                                            return __('invoices.days');
+                                        } else {
+                                            return __('invoices.hours');
+                                        }
+                                    }),
+                                Placeholder::make('x')
+                                    ->hiddenLabel()
+                                    ->content("X"),
+                                Placeholder::make('worklog_rate')
+                                    ->hiddenLabel()
+                                    ->content(number_format($buyer->contract_rate, 2, ',').' '.$buyer->currency->code),
+                                Placeholder::make('=')
+                                    ->hiddenLabel()
+                                    ->content("="),
+                                Placeholder::make('worklog_price')
+                                    ->hiddenLabel()
+                                    ->content(function (callable $get) use ($buyer) {
+                                        $startDate = $get('start_date');
+                                        $endDate = $get('end_date');
+
+                                        if (!$startDate || !$endDate) {
+                                            return '0.00';
+                                        }
+                                        $price = Worklog::calculatePriceBasedOnTime($startDate, $endDate, $buyer->contract_type, $buyer->contract_rate);
+                                        return number_format($price, 2, ',');
+                                    }),
+                                Placeholder::make('worklog_currency_code')
+                                    ->hiddenLabel()
+                                    ->content($buyer->currency->code),
+                            ]),
+                    ])
+                    ->action(function (array $data, callable $set) use ($buyer) {
+                        $startDate = $data['start_date'];
+                        $endDate = $data['end_date'];
+
+                        if (!$startDate || !$endDate) {
+                            return;
+                        }
+
+                        if ($buyer->contract_type === TypeOfContract::DAILY) {
+                            // Calculate the actual number of working days
+                            $workingDays = Worklog::calculateWorkingDaysBetweenDates($startDate, $endDate);
+                            $set('items.0.quantity', $workingDays);
+                            $set('items.0.price_net', $buyer->contract_rate);
+                        } else {
+                            // For hourly contracts, set quantity to 1 and calculate total price
+                            $totalPrice = Worklog::calculatePriceBasedOnTime($startDate, $endDate, $buyer->contract_type, $buyer->contract_rate);
+                            $set('items.0.quantity', 1);
+                            $set('items.0.price_net', $totalPrice);
+                        }
+                    });
+            }
+        }
+        return null;
     }
 }

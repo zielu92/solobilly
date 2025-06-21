@@ -49,6 +49,15 @@ return [
         'default'       => 'Default',
         'default_pl'    => 'Default Polish',
         'default_en'    => 'Default English',
-    ]
+    ],
+    'start_period'      => 'Start Period',
+    'end_period'        => 'End Period',
+    'sum'               => 'Sum',
+    'hours'             => 'hours',
+    'days'              => 'days',
+    'default_rates'     => 'Default rates for',
+    'calculations'      => 'Calculations',
+    'worklogs'          => 'Worklogs calculations',
+    'worklogs_label'    => 'Worklogs'
 
 ];

@@ -49,5 +49,14 @@ return [
         'default'       => 'Domyślny',
         'default_pl'    => 'Domyślny polski',
         'default_en'    => 'Domyślny angielski',
-    ]
+    ],
+    'start_period'      => 'Początek okresu',
+    'end_period'        => 'Koniec okresu',
+    'sum'               => 'Suma',
+    'hours'             => 'godzin',
+    'days'              => 'dni',
+    'default_rates'     => 'Domyślne stawki dla',
+    'calculations'      => 'Obliczenia',
+    'worklogs'          => 'Przeliczanie dziennika pracy',
+    'worklogs_label'    => 'Przelicz'
 ];

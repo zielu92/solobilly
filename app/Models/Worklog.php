@@ -12,6 +12,7 @@ class Worklog extends Model
 {
     use HasFactory;
 
+    protected $table = 'work_logs';
     /**
      * The attributes that are mass assignable.
      *

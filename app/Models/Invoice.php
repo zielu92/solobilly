@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enum\TypeOfContract;
-use App\Models\Worklog as WorklogModel;
 use Carbon\Carbon;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Hidden;
@@ -411,10 +410,10 @@ class Invoice extends Model
         }
 
         if ($contractType === TypeOfContract::DAILY) {
-            $days = WorklogModel::calculateWorkingDaysBetweenDates($startDate, $endDate);
+            $days = Worklog::calculateWorkingDaysBetweenDates($startDate, $endDate);
             $set('worklog_amount', $days . ' working days');
         } else {
-            $hours = WorklogModel::calculateTotalHoursBetweenDates($startDate, $endDate);
+            $hours = Worklog::calculateTotalHoursBetweenDates($startDate, $endDate);
             $set('worklog_amount', $hours . ' hours');
         }
     }
@@ -553,10 +552,10 @@ class Invoice extends Model
                                         }
 
                                         if ($buyer->contract_type === TypeOfContract::DAILY) {
-                                            $days = WorklogModel::calculateWorkingDaysBetweenDates($startDate, $endDate);
+                                            $days = Worklog::calculateWorkingDaysBetweenDates($startDate, $endDate);
                                             return $days;
                                         } else {
-                                            $hours = WorklogModel::calculateTotalHoursBetweenDates($startDate, $endDate);
+                                            $hours = Worklog::calculateTotalHoursBetweenDates($startDate, $endDate);
                                             return $hours;
                                         }
                                     }),
@@ -587,7 +586,7 @@ class Invoice extends Model
                                         if (!$startDate || !$endDate) {
                                             return '0.00';
                                         }
-                                        $price = WorklogModel::calculatePriceBasedOnTime($startDate, $endDate, $buyer->contract_type, $buyer->contract_rate);
+                                        $price = Worklog::calculatePriceBasedOnTime($startDate, $endDate, $buyer->contract_type, $buyer->contract_rate);
                                         return number_format($price, 2, ',');
                                     }),
                                 Placeholder::make('worklog_currency_code')
@@ -605,12 +604,12 @@ class Invoice extends Model
 
                         if ($buyer->contract_type === TypeOfContract::DAILY) {
                             // Calculate the actual number of working days
-                            $workingDays = WorklogModel::calculateWorkingDaysBetweenDates($startDate, $endDate);
+                            $workingDays = Worklog::calculateWorkingDaysBetweenDates($startDate, $endDate);
                             $set('items.0.quantity', $workingDays);
                             $set('items.0.price_net', $buyer->contract_rate);
                         } else {
                             // For hourly contracts, set quantity to 1 and calculate total price
-                            $totalPrice = WorklogModel::calculatePriceBasedOnTime($startDate, $endDate, $buyer->contract_type, $buyer->contract_rate);
+                            $totalPrice = Worklog::calculatePriceBasedOnTime($startDate, $endDate, $buyer->contract_type, $buyer->contract_rate);
                             $set('items.0.quantity', 1);
                             $set('items.0.price_net', $totalPrice);
                         }

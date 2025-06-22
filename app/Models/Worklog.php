@@ -4,15 +4,11 @@ namespace App\Models;
 
 use App\Enum\TypeOfContract;
 use Carbon\Carbon;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class WorkLog extends Model
+class Worklog extends Model
 {
     use HasFactory;
 

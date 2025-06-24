@@ -10,6 +10,7 @@ use App\Models\Invoice;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use App\Filament\Resources\InvoiceResource\Pages;
+use Filament\Tables\Actions\ReplicateAction;
 use Illuminate\Support\Facades\URL;
 
 class InvoiceResource extends Resource
@@ -87,6 +88,7 @@ class InvoiceResource extends Resource
                     ->label(__('invoices.download'))
                     ->url(fn ($record) => URL::route('invoices.show', $record->id))
                     ->openUrlInNewTab(),
+                ReplicateAction::make()
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('payment_status')

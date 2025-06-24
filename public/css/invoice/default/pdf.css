@@ -78,7 +78,7 @@ body {
 }
 
 .products-section {
-    margin: 30px 0;
+    margin: 10px 0;
 }
 
 .products-table {
@@ -86,6 +86,10 @@ body {
     border-collapse: collapse;
     border: 1px solid #d1d5db;
     font-family: "DejaVu Sans", Arial, sans-serif;
+}
+
+.products-table-eng {
+    font-size: 0.8em;
 }
 
 .products-table thead {

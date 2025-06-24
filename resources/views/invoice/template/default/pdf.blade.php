@@ -92,40 +92,40 @@ if($showDiscount)
             <thead>
             <tr>
                 <th>
-                    <strong>L.p.</strong><br>
-                    No
+                    L.p.<br>
+                    <span class="products-table-eng">No</span>
                 </th>
                 <th>
-                    <strong>Nazwa Usługi</strong><br>
-                    Description
+                    Nazwa Usługi<br>
+                    <span class="products-table-eng">Description</span>
                 </th>
                 <th>
-                    <strong>Wartość netto</strong><br>
-                    Net value
+                    Wartość netto<br>
+                    <span class="products-table-eng">Net value</span>
                 </th>
                 <th class="text-right">
-                    <strong>Stawka VAT</strong><br>
-                    VAT
+                    Stawka VAT<br>
+                    <span class="products-table-eng">VAT</span>
                 </th>
                 @if($showDiscount)
                     <th class="text-right">
-                        <strong>Rabat</strong><br>
-                        Discount
+                        Rabat<br>
+                        <span class="products-table-eng">Discount</span>
                     </th>
                 @endif
                 @if($showQty)
                     <th class="text-right">
-                        <strong>Ilość</strong><br>
-                        QTY
+                        Ilość<br>
+                        <span class="products-table-eng">QTY</span>
                     </th>
                 @endif
                 <th class="text-right">
-                    <strong>Kwota VAT</strong><br>
-                    Vat amount
+                    Kwota VAT<br>
+                    <span class="products-table-eng">Vat amount</span>
                 </th>
                 <th class="text-right">
-                    <strong>Wartość brutto</strong><br>
-                    Total amount
+                    Wartość brutto<br>
+                    <span class="products-table-eng">Total amount</span>
                 </th>
             </tr>
             </thead>

@@ -7,6 +7,7 @@ use App\Models\Cost;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Table;
 
 class CostResource extends Resource
@@ -62,12 +63,13 @@ class CostResource extends Resource
                     ->date()
                     ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('payment_date', 'desc')
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                ReplicateAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

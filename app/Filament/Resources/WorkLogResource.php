@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -118,7 +119,7 @@ class WorkLogResource extends Resource
                     ->limit(50)
                     ->searchable(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('start')
             ->filters([
                 Tables\Filters\SelectFilter::make('buyer')
                     ->relationship('buyer', 'name')
@@ -145,6 +146,7 @@ class WorkLogResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                ReplicateAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

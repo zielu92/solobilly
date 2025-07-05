@@ -2,13 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\TypeOfContract;
 use App\Filament\Resources\WorkLogResource\Pages;
+use App\Models\Buyer;
 use App\Models\WorkLog;
 use Filament\Forms;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ReplicateAction;
@@ -45,13 +48,14 @@ class WorkLogResource extends Resource
                 ->label(__('worklogs.buyer'))
                 ->relationship('buyer', 'name')
                 ->required()
+                ->live()
+                ->afterStateUpdated(fn () => null) // Trigger form updates
                 ->columnSpanFull(),
             MarkdownEditor::make('description')
                 ->label(__('worklogs.description'))
                 ->columnSpanFull(),
         ];
 
-        // In edit mode, show only the time fields directly
         if ($isEditMode) {
             $formSchema[] = Forms\Components\DateTimePicker::make('start')
                 ->seconds(false)
@@ -65,16 +69,30 @@ class WorkLogResource extends Resource
                 ->afterOrEqual('start')
                 ->validationMessages([
                     'after_or_equal' => __('worklogs.end_after_start'),
-                ]);
+                ])
+                ->live()
+                ->visible(fn (Get $get): bool => self::isTimeBased($get('buyer_id')));
+
+
+            $formSchema[] = Forms\Components\TextInput::make('unit_amount')
+                ->label(__('worklogs.units'))
+                ->numeric()
+                ->required()
+                ->live()
+                ->visible(fn (Get $get): bool => !self::isTimeBased($get('buyer_id')));
         }
         else {
+            // Create mode - use repeater
             $formSchema[] = Repeater::make('items')
                 ->label(__('worklogs.item'))
                 ->schema([
+
                     Forms\Components\DateTimePicker::make('start')
                         ->seconds(false)
+                        ->default(now()->subHours(8))
                         ->label(__('worklogs.start'))
                         ->required(),
+
                     Forms\Components\DateTimePicker::make('end')
                         ->seconds(false)
                         ->label(__('worklogs.end'))
@@ -83,7 +101,17 @@ class WorkLogResource extends Resource
                         ->afterOrEqual('start')
                         ->validationMessages([
                             'after_or_equal' => __('worklogs.end_after_start'),
-                        ]),
+                        ])
+                        ->live()
+                        ->visible(fn (Get $get): bool => self::isTimeBased($get('../../buyer_id'))),
+
+                    Forms\Components\TextInput::make('unit_amount')
+                        ->label(__('worklogs.units'))
+                        ->numeric()
+                        ->required()
+                        ->live()
+                        ->postfix(fn (Get $get): string => Buyer::find($get('../../buyer_id'))->unit_type)
+                        ->visible(fn (Get $get): bool => !self::isTimeBased($get('../../buyer_id'))),
                 ])
                 ->columnSpanFull()
                 ->defaultItems(1)
@@ -91,6 +119,27 @@ class WorkLogResource extends Resource
         }
 
         return $form->schema($formSchema);
+    }
+
+    /**
+     * Check if the selected buyer has a time-based contract
+     */
+    private static function isTimeBased(?string $buyerId): bool
+    {
+        if (!$buyerId) {
+            return true;
+        }
+
+        $buyer = \App\Models\Buyer::find($buyerId);
+        if (!$buyer) {
+            return true;
+        }
+
+        if (!$buyer->contract_type) {
+            return true;
+        }
+
+        return $buyer->contract_type !== TypeOfContract::OTHER;
     }
 
     public static function table(Table $table): Table
@@ -111,7 +160,16 @@ class WorkLogResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration')
                     ->label(__('worklogs.duration'))
-                    ->formatStateUsing(fn (string $state): string => sprintf('%s h', $state))
+                    ->formatStateUsing(function (string $state, $record): string {
+                        // Check if unit_amount exists and is not null
+                        if (!is_null($record->unit_amount)) {
+                            $unitType = $record->buyer->unit_type;
+                            return sprintf('%s %s', $record->unit_amount, $unitType);
+                        }
+
+                        // Fallback to duration in hours
+                        return sprintf('%s h', $state);
+                    })
                     ->alignRight()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('description')

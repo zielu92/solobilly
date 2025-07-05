@@ -22,7 +22,8 @@ class CreateWorkLog extends CreateRecord
                 'buyer_id'      => $data['buyer_id'],
                 'description'   => $data['description'],
                 'start'         => $item['start'],
-                'end'           => $item['end'],
+                'end'           => $item['end'] ?? null,
+                'unit_amount'   => $item['unit_amount'] ?? null,
                 ]);
             $createdLogs[] = $worklog;
         }

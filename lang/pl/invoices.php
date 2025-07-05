@@ -58,5 +58,7 @@ return [
     'default_rates'     => 'Domyślne stawki dla',
     'calculations'      => 'Obliczenia',
     'worklogs'          => 'Przeliczanie dziennika pracy',
-    'worklogs_label'    => 'Przelicz'
+    'worklogs_label'    => 'Przelicz',
+    'display_units'     => 'Wyświetl jednostki',
+    'units'             => 'Jednostki'
 ];

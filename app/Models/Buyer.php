@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\TypeOfContract;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
@@ -36,7 +37,8 @@ class Buyer extends Model
         'contract_type',
         'contract_rate',
         'color',
-        'currency_id'
+        'currency_id',
+        'unit_type'
     ];
 
     /**
@@ -115,7 +117,11 @@ class Buyer extends Model
             TextInput::make('contract_rate')
                 ->label(__('buyers.contract_rate'))
                 ->numeric()
-                ->hidden(fn(Get $get) => $get('contract_type')===TypeOfContract::OTHER || $get('contract_type')==null)
+                ->default(null),
+            TextInput::make('unit_type')
+                ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('buyers.unit_type_info'))
+                ->label(__('buyers.unit_type'))
+                ->visible(fn(Get $get) => $get('contract_type') === 'other' || $get('contract_type') === TypeOfContract::OTHER)
                 ->default(null),
             Select::make('currency_id')
                 ->label(__('invoices.currency'))

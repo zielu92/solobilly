@@ -16,6 +16,8 @@ return [
     'krs'           => 'KRS',
     'contract_type' => 'Contract Type',
     'contract_rate' => 'Contract Rate',
+    'unit_type'     => 'Units',
+    'unit_type_info'=> 'In case if default unit is different than hours or another time related unit, you can just type an another unit here',
     'color'         => 'Default color in worklogs/stats',
     'type'          => [
         'hourly'    => 'hourly',

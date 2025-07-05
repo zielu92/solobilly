@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Log;
 
 class WorkLog extends Model
 {
@@ -22,6 +23,7 @@ class WorkLog extends Model
         'start',
         'end',
         'description',
+        'unit_amount'
     ];
 
     /**
@@ -102,6 +104,23 @@ class WorkLog extends Model
         }
 
         return count(array_unique($workingDates));
+    }
+
+    public static function calculateOtherUnitsBetweenDates($startDate, $endDate): int
+    {
+        if (!$startDate || !$endDate) {
+            return '0.00';
+        }
+        $endDate = Carbon::parse($endDate)->endOfDay();
+        $worklogs = self::whereBetween('start', [$startDate, $endDate])
+            ->get();
+        $total = 0;
+        foreach ($worklogs as $worklog) {
+            if ($worklog->start && $worklog->unit_amount) {
+                $total += $worklog->unit_amount;
+            }
+        }
+        return $total;
     }
 
 }

@@ -29,6 +29,8 @@ class InvoiceItem extends Model
         'total_tax',
         'total_discount',
         'invoice_id',
+        'display_units',
+        'units'
     ];
 
     /**
@@ -47,6 +49,7 @@ class InvoiceItem extends Model
         'total_tax' => 'decimal:2',
         'total_discount' => 'decimal:2',
         'invoice_id' => 'integer',
+        'display_units' => 'boolean'
     ];
 
     public function invoice(): BelongsTo

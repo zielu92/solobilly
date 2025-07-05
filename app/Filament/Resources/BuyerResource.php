@@ -60,8 +60,7 @@ class BuyerResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                ->slideOver(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -88,6 +87,7 @@ class BuyerResource extends Resource
         return [
             'index' => Pages\ListBuyers::route('/'),
             'create' => Pages\CreateBuyer::route('/create'),
+            'edit' => Pages\EditBuyer::route('/{record}/edit'),
         ];
     }
 

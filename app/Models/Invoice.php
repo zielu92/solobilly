@@ -21,10 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
-use Log;
 use Modules\Payments\Models\PaymentMethodModel;
-use phpDocumentor\Reflection\Types\Boolean;
-use PHPStan\PhpDocParser\Ast\Attribute;
 
 class Invoice extends Model
 {

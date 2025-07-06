@@ -110,7 +110,7 @@ class WorkLogResource extends Resource
                         ->numeric()
                         ->required()
                         ->live()
-                        ->postfix(fn (Get $get): string => Buyer::find($get('../../buyer_id'))->unit_type)
+                        ->postfix(fn (Get $get): string => Buyer::find($get('../../buyer_id'))?->unit_type ?? '')
                         ->visible(fn (Get $get): bool => !self::isTimeBased($get('../../buyer_id'))),
                 ])
                 ->columnSpanFull()

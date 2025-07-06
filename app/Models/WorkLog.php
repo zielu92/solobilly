@@ -109,7 +109,7 @@ class WorkLog extends Model
     public static function calculateOtherUnitsBetweenDates($startDate, $endDate): int
     {
         if (!$startDate || !$endDate) {
-            return '0.00';
+            return 0;
         }
         $endDate = Carbon::parse($endDate)->endOfDay();
         $worklogs = self::whereBetween('start', [$startDate, $endDate])

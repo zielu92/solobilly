@@ -58,6 +58,8 @@ return [
     'default_rates'     => 'Default rates for',
     'calculations'      => 'Calculations',
     'worklogs'          => 'Worklogs calculations',
-    'worklogs_label'    => 'Worklogs'
+    'worklogs_label'    => 'Worklogs',
+    'display_units'     => 'Display Units',
+    'units'             => 'Units'
 
 ];

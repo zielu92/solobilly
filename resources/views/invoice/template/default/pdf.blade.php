@@ -4,6 +4,8 @@ if($showQty)
     $colspan += 1;
 if($showDiscount)
     $colspan += 1;
+if($invoice->showUnits)
+    $colspan +=1;
 ?>
 
     <!doctype html>
@@ -119,6 +121,12 @@ if($showDiscount)
                         <span class="products-table-eng">QTY</span>
                     </th>
                 @endif
+                @if($invoice->showUnits)
+                    <th class="text-right">
+                        Jednostki<br>
+                        <span class="products-table-eng">Units</span>
+                    </th>
+                @endif
                 <th class="text-right">
                     Kwota VAT<br>
                     <span class="products-table-eng">Vat amount</span>
@@ -152,6 +160,11 @@ if($showDiscount)
                     @if($showQty)
                         <td class="text-right">
                             {{$item->quantity}}
+                        </td>
+                    @endif
+                    @if($invoice->showUnits)
+                        <td class="text-right">
+                            {{$item->units}}
                         </td>
                     @endif
                     <td class="text-right">

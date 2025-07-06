@@ -63,7 +63,7 @@ class CostResource extends Resource
                     ->date()
                     ->sortable(),
             ])
-            ->defaultSort('payment_date', 'desc')
+            ->defaultSort('payment_date')
             ->filters([
                 //
             ])

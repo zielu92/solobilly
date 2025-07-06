@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\WorkLog;
 use App\Traits\FilterTrait;
+use Carbon\Carbon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Guava\Calendar\ValueObjects\CalendarEvent;
 use Guava\Calendar\Widgets\CalendarWidget as CalendarWidgetBase;
@@ -52,12 +53,24 @@ class CalendarWidget extends CalendarWidgetBase
             })
             ->get()
             ->map(function (WorkLog $workLog) {
-                return CalendarEvent::make()
-                    ->title(sprintf('%s (%s h)', $workLog->buyer->name, $workLog->duration))
-                    ->start($workLog->start)
-                    ->end($workLog->end)
-                    ->backgroundColor($workLog->buyer->color)
-                    ->textColor(textColorContrast($workLog->buyer->color));
+                if (!is_null($workLog->unit_amount)) {
+                    $amountDisplay = sprintf('%s %s', $workLog->unit_amount, $workLog->buyer->unit_type);
+                    return CalendarEvent::make()
+                        ->title(sprintf('%s (%s)', $workLog->buyer->name, $amountDisplay))
+                        ->backgroundColor($workLog->buyer->color)
+                        ->textColor(textColorContrast($workLog->buyer->color))
+                        ->start(Carbon::parse($workLog->start)->format('Y-m-d'))
+                        ->end(Carbon::parse($workLog->start)->format('Y-m-d'));
+                } else {
+                    $amountDisplay = sprintf('%s h', $workLog->duration);
+                    return CalendarEvent::make()
+                        ->title(sprintf('%s (%s)', $workLog->buyer->name, $amountDisplay))
+                        ->start($workLog->start)
+                        ->end($workLog->end)
+                        ->backgroundColor($workLog->buyer->color)
+                        ->textColor(textColorContrast($workLog->buyer->color));
+                }
+
             })->toArray();
     }
 

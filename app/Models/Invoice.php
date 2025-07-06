@@ -6,6 +6,7 @@ use App\Enum\TypeOfContract;
 use Carbon\Carbon;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
@@ -53,7 +54,7 @@ class Invoice extends Model
         'path',
         'currency_id',
         'payment_method_id',
-        'template'
+        'template',
     ];
 
     /**
@@ -103,6 +104,11 @@ class Invoice extends Model
     public function invoiceItems(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function getShowUnitsAttribute(): bool
+    {
+        return $this->invoiceItems()->where('display_units', 1)->exists();
     }
 
     public function paymentMethod(): BelongsTo
@@ -179,10 +185,14 @@ class Invoice extends Model
                 ->preload()
                 ->live()
                 ->afterStateUpdated(function ($state, callable $set) {
-                    $buyer = Buyer::select('currency_id')->with('currency')->find($state);
+                    $buyer = Buyer::select('currency_id', 'unit_type')->with('currency')->find($state);
                     if ($buyer && $buyer->currency_id) {
                         $set('currency_id', $buyer->currency_id);
                         $set('currency_code', $buyer->currency->code);
+                        $set('items.0.display_units', $buyer->unit_type!=null);
+                        $set('items.0.units', $buyer->unit_type);
+                        $set('items.0.name', "");
+                        $set('items.0.discount', 0);
                     }
                 })
                 ->hintAction(
@@ -274,12 +284,12 @@ class Invoice extends Model
                 ->schema([
                     Textarea::make('name')
                         ->label(__('invoices.item_name'))
-                        ->columnSpan(2)
+                        ->columnSpan(3)
                         ->required(),
 
                     TextInput::make('quantity')
                         ->label(__('invoices.quantity'))
-                        ->columnSpan(1)
+                        ->columnSpan(2)
                         ->lazy()
                         ->debounce()
                         ->numeric()
@@ -288,12 +298,24 @@ class Invoice extends Model
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateGrandTotals($set, $get))
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
+                    Toggle::make('display_units')
+                        ->label(__('invoices.display_units'))
+                        ->inline(false)
+                        ->columnSpan(2)
+                        ->live(),
+
+                    TextInput::make('units')
+                        ->label(__('invoices.units'))
+                        ->columnSpan(2)
+                        ->visible(fn(Get $get) => $get('display_units'))
+                        ->required(),
+
                     TextInput::make('price_net')
                         ->label(__('invoices.net_price'))
                         ->numeric()
                         ->lazy()
                         ->debounce()
-                        ->columnSpan(2)
+                        ->columnSpan(3)
                         ->minValue(0.01)
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->required()
@@ -302,7 +324,7 @@ class Invoice extends Model
 
                     Select::make('tax_rate')
                         ->label(__('invoices.tax_rate'))
-                        ->columnSpan(1)
+                        ->columnSpan(3)
                         ->lazy()
                         ->debounce()
                         ->default(setting('invoice.default_tax_rate'))
@@ -316,30 +338,28 @@ class Invoice extends Model
                             'np' => __('invoices.tax_rates.np'),
                         ])
                         ->required()
-                        ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateGrandTotals($set, $get))
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
                     TextInput::make('discount')
                         ->label(__('invoices.discount'))
                         ->lazy()
                         ->debounce()
-                        ->columnSpan(2)
+                        ->columnSpan(3)
                         ->nullable()
                         ->numeric()
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
-                        ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateGrandTotals($set, $get))
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
                     TextInput::make('price_gross')
                         ->label(__('invoices.gross_price'))
                         ->numeric()
-                        ->columnSpan(2)
+                        ->columnSpan(3)
                         ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->readOnly(),
 
                     TextInput::make('tax_amount')
                         ->label(__('invoices.tax_amount'))
-                        ->columnSpan(2)
+                        ->columnSpan(3)
                         ->readOnly()
                             ->suffix(fn(Get $get) => $get('../../currency_code'))
                         ->numeric(),
@@ -420,11 +440,16 @@ class Invoice extends Model
 
     public static function updateTotals(callable $set, callable $get): array
     {
-        // Ensure values are numeric and default to 0 if not
-        $quantity = is_numeric($get('quantity')) ? (int) $get('quantity') : 0;
-        $priceNet = is_numeric($get('price_net')) ? (float) $get('price_net') : 0.00;
-        $discount = is_numeric($get('discount')) ? (float) $get('discount') : 0.00;
-        $taxRate = $get('tax_rate') ?? '23';
+        $quantityValue = $get('quantity');
+        $priceNetValue = $get('price_net');
+        $discountValue = $get('discount');
+        $taxRateValue = $get('tax_rate');
+
+        // Ensure values exist and are numeric with proper defaults
+        $quantity = (is_null($quantityValue) || !is_numeric($quantityValue)) ? 0 : (int) $quantityValue;
+        $priceNet = (is_null($priceNetValue) || !is_numeric($priceNetValue)) ? 0.00 : (float) $priceNetValue;
+        $discount = (is_null($discountValue) || !is_numeric($discountValue)) ? 0.00 : (float) $discountValue;
+        $taxRate = $taxRateValue ?? '23';
 
         // Determine the tax rate
         $taxPercentage = in_array($taxRate, ['zw', 'np']) ? 0 : (int) $taxRate;
@@ -462,54 +487,52 @@ class Invoice extends Model
     {
         $items = $get('items') ?? [];
 
-        // Reset totals before summing
         $totalNet = 0.00;
         $totalTax = 0.00;
         $totalGross = 0.00;
         $totalDiscount = 0.00;
 
         foreach ($items as $index => $item) {
-            // Ensure values are numeric, default to 0 if not
-            $quantity = is_numeric($item['quantity']) ? (int) $item['quantity'] : 0;
-            $priceNet = is_numeric($item['price_net']) ? (float) $item['price_net'] : 0.00;
-            $discount = is_numeric($item['discount']) ? (float) $item['discount'] : 0.00;
+            // Safely get values from the item array with null checks
+            $quantity = isset($item['quantity']) && is_numeric($item['quantity']) ? (int) $item['quantity'] : 0;
+            $priceNet = isset($item['price_net']) && is_numeric($item['price_net']) ? (float) $item['price_net'] : 0.00;
+            $discount = isset($item['discount']) && is_numeric($item['discount']) ? (float) $item['discount'] : 0.00;
             $taxRate = $item['tax_rate'] ?? '23';
 
-            // Recalculate item totals
+            // Skip calculation if essential values are missing or zero
+            if ($quantity <= 0 || $priceNet <= 0) {
+                continue;
+            }
+
+            // Calculate item totals
             $itemTotalNet = max(($quantity * $priceNet) - $discount, 0);
             $taxPercentage = in_array($taxRate, ['zw', 'np']) ? 0 : (int) $taxRate;
             $itemTotalTax = round(($itemTotalNet * $taxPercentage) / 100, 2);
             $itemTotalGross = round($itemTotalNet + $itemTotalTax, 2);
 
-            // Sum up the recalculated values
+            // Sum up the values
             $totalNet += $itemTotalNet;
             $totalTax += $itemTotalTax;
             $totalGross += $itemTotalGross;
             $totalDiscount += $discount;
         }
 
-        // Round final totals to 2 decimal places
-        $totalNet = round($totalNet, 2);
-        $totalTax = round($totalTax, 2);
-        $totalGross = round($totalGross, 2);
-        $totalDiscount = round($totalDiscount, 2);
-
         // Update the grand total fields
-        $set('grand_total_net', $totalNet);
-        $set('grand_total_tax', $totalTax);
-        $set('grand_total_gross', $totalGross);
-        $set('grand_total_discount', $totalDiscount);
+        $set('grand_total_net', round($totalNet, 2));
+        $set('grand_total_tax', round($totalTax, 2));
+        $set('grand_total_gross', round($totalGross, 2));
+        $set('grand_total_discount', round($totalDiscount, 2));
     }
 
     public static  function getModal($state): Action|null
     {
         if ($state) {
-            $buyer = Buyer::select('contract_type', 'contract_rate', 'currency_id', 'name')->with('currency')->find($state);
-            if ($buyer->contract_type === TypeOfContract::DAILY || $buyer->contract_type === TypeOfContract::HOURLY) {
+            $buyer = Buyer::select('contract_type', 'contract_rate', 'currency_id', 'name', 'unit_type')->with('currency')->find($state);
+            if ($buyer->contract_type === TypeOfContract::DAILY || $buyer->contract_type === TypeOfContract::HOURLY || $buyer->contract_type === TypeOfContract::OTHER) {
                 //load the values for specific buyer
-                $displayRates = $buyer->contract_type !== TypeOfContract::OTHER;
+                $displayRates = $buyer->contract_type !== TypeOfContract::OTHER || $buyer->unit_type!=null;
                 $description = sprintf('%s %s %s %s/%s', __('invoices.default_rates'), $buyer->name, number_format($buyer->contract_rate, 2, ','), $buyer->currency->code, $buyer->contract_type->getLabel());
-                //todo: advanced tariffs
+
                 return Action::make('worklogs')
                     ->modalHeading(__('invoices.worklogs'))
                     ->label(__('invoices.worklogs_label'))
@@ -550,13 +573,12 @@ class Invoice extends Model
                                         if (!$startDate || !$endDate) {
                                             return '0';
                                         }
-
                                         if ($buyer->contract_type === TypeOfContract::DAILY) {
-                                            $days = WorkLog::calculateWorkingDaysBetweenDates($startDate, $endDate);
-                                            return $days;
+                                            return WorkLog::calculateWorkingDaysBetweenDates($startDate, $endDate);
+                                        } else if ($buyer->contract_type === TypeOfContract::OTHER && $buyer->unit_type!=null) {
+                                            return WorkLog::calculateOtherUnitsBetweenDates($startDate, $endDate);
                                         } else {
-                                            $hours = WorkLog::calculateTotalHoursBetweenDates($startDate, $endDate);
-                                            return $hours;
+                                            return WorkLog::calculateTotalHoursBetweenDates($startDate, $endDate);
                                         }
                                     }),
                                 Placeholder::make('worklog_units')
@@ -564,6 +586,8 @@ class Invoice extends Model
                                     ->content(function (callable $get) use ($buyer) {
                                         if ($buyer->contract_type === TypeOfContract::DAILY) {
                                             return __('invoices.days');
+                                        } else if ($buyer->contract_type === TypeOfContract::OTHER && $buyer->unit_type!=null) {
+                                            return $buyer->unit_type;
                                         } else {
                                             return __('invoices.hours');
                                         }
@@ -601,11 +625,15 @@ class Invoice extends Model
                         if (!$startDate || !$endDate) {
                             return;
                         }
-
                         if ($buyer->contract_type === TypeOfContract::DAILY) {
                             // Calculate the actual number of working days
                             $workingDays = WorkLog::calculateWorkingDaysBetweenDates($startDate, $endDate);
                             $set('items.0.quantity', $workingDays);
+                            $set('items.0.price_net', $buyer->contract_rate);
+
+                        }  else if ($buyer->contract_type === TypeOfContract::OTHER && $buyer->unit_type!=null) {
+                            $units = WorkLog::calculateOtherUnitsBetweenDates($startDate, $endDate);
+                            $set('items.0.quantity', $units);
                             $set('items.0.price_net', $buyer->contract_rate);
                         } else {
                             // For hourly contracts, set quantity to 1 and calculate total price
@@ -613,6 +641,8 @@ class Invoice extends Model
                             $set('items.0.quantity', 1);
                             $set('items.0.price_net', $totalPrice);
                         }
+                        $set('items.0.name', "");
+                        $set('items.0.discount', 0);
                     });
             }
         }

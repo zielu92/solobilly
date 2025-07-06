@@ -16,6 +16,8 @@ return [
     'krs'           => 'KRS',
     'contract_type' => 'Typ rozliczenia',
     'contract_rate' => 'Stawka rozliczenia',
+    'unit_type'     => 'Jednostki rozliczeń',
+    'unit_type_info'=> 'W przypadku innego typu rozliczenia niż czas jak godziny, można podać swoje jednostki',
     'color'         => 'Domyślny kolor w statystykach',
     'type'          => [
         'hourly'    => 'godzinowo',

@@ -28,7 +28,7 @@ return [
     'item_name'         => 'Nazwa pozycji',
     'quantity'          => 'Ilość',
     'net_price'         => 'Cena netto',
-    'tax_rate'          => 'S. podat.',
+    'tax_rate'          => 'Stawka podat.',
     'tax_rates'     => [
         'zw' => 'Zwolniony',
         'np' => 'Nie podlega'

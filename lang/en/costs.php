@@ -25,5 +25,5 @@ return [
     'year'         => 'This year',
     'download_receipt' => 'Download Receipt File',
     'download_invoice' => 'Download Invoice File',
-    'percent_deductible_from_taxes' => 'Tax Deductible Percentage',
+    'percent_deductible_from_taxes' => 'Tax Deductible',
 ];

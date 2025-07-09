@@ -86,7 +86,6 @@ class WorkLogResource extends Resource
             $formSchema[] = Repeater::make('items')
                 ->label(__('worklogs.item'))
                 ->schema([
-
                     Forms\Components\DateTimePicker::make('start')
                         ->seconds(false)
                         ->default(now()->subHours(8))
@@ -177,7 +176,7 @@ class WorkLogResource extends Resource
                     ->limit(50)
                     ->searchable(),
             ])
-            ->defaultSort('start')
+            ->defaultSort('start', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('buyer')
                     ->relationship('buyer', 'name')

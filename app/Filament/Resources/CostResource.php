@@ -61,9 +61,7 @@ class CostResource extends Resource
                 Tables\Columns\TextColumn::make('payment_date')
                     ->label(__('costs.payment_date'))
                     ->date()
-                    ->sortUsing(function ($query, string $direction) {
-                        return $query->orderByRaw("payment_date IS NULL DESC, payment_date {$direction}");
-                    }),
+                    ->sortable(),
             ])
             ->defaultSort('payment_date', 'desc')
             ->filters([

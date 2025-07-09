@@ -63,7 +63,12 @@ class CostResource extends Resource
                     ->date()
                     ->sortable(),
             ])
-            ->defaultSort('payment_date', 'desc')
+            ->modifyQueryUsing(function ($query) {
+                if (!request()->has('tableSort')) {
+                    return $query->orderByRaw('payment_date IS NULL DESC, payment_date DESC');
+                }
+                return $query;
+            })
             ->filters([
                 //
             ])

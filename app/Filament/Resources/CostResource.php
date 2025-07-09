@@ -64,7 +64,7 @@ class CostResource extends Resource
                     ->sortable(),
             ])
             ->modifyQueryUsing(function ($query) {
-                if (!request()->has('tableSort')) {
+                if (!request()->has('tableSortColumn')) {
                     return $query->orderByRaw('payment_date IS NULL DESC, payment_date DESC');
                 }
                 return $query;

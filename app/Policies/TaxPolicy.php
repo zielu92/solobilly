@@ -29,7 +29,7 @@ class TaxPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('invoices.create');
+        return $user->can('tax.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class TaxPolicy
      */
     public function update(User $user, Tax $taxes): bool
     {
-        return $user->can('invoices.update');
+        return $user->can('tax.update');
     }
 
     /**
@@ -45,7 +45,7 @@ class TaxPolicy
      */
     public function delete(User $user, Tax $taxes): bool
     {
-        return $user->can('invoices.delete');
+        return $user->can('tax.delete');
     }
 
     /**
@@ -53,7 +53,7 @@ class TaxPolicy
      */
     public function restore(User $user, Tax $taxes): bool
     {
-        return $user->can('invoices.restore');
+        return $user->can('tax.restore');
     }
 
     /**
@@ -61,6 +61,6 @@ class TaxPolicy
      */
     public function forceDelete(User $user, Tax $taxes): bool
     {
-        return $user->can('invoices.forceDelete');
+        return $user->can('tax.forceDelete');
     }
 }

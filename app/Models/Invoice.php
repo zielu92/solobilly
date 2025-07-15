@@ -329,7 +329,7 @@ class Invoice extends Model
                         ->debounce()
                         ->default(setting('invoice.default_tax_rate'))
                         ->options([
-                            ...Tax::all()->pluck('name', 'rate'),
+                            ...Tax::query()->orderBy('rate', 'desc')->pluck('name', 'rate'),
                             'zw' => __('invoices.tax_rates.zw'),
                             'np' => __('invoices.tax_rates.np'),
                         ])

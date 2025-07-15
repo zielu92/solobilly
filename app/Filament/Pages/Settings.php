@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Currency;
+use App\Models\Tax;
 use Chiiya\FilamentAccessControl\Traits\AuthorizesPageAccess;
 use Closure;
 use Filament\Actions\Action;
@@ -142,11 +143,7 @@ class Settings extends BaseSettings
                                 ->label(__('settings.default_vat_rate'))
                                 ->columnSpan(2)
                                 ->options([
-                                    '23' => '23%',
-                                    '22' => '22%',
-                                    '8' => '8%',
-                                    '5' => '5%',
-                                    '0' => '0%',
+                                    ...Tax::all()->pluck('name', 'rate'),
                                     'zw' => __('settings.tax_rates.zw'),
                                     'np' => __('settings.tax_rates.np'),
                                 ]),

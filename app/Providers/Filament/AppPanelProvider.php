@@ -8,6 +8,7 @@ use App\Filament\Resources\BuyerResource;
 use App\Filament\Resources\CostCategoryResource;
 use App\Filament\Resources\CostResource;
 use App\Filament\Resources\InvoiceResource;
+use App\Filament\Resources\TaxResource;
 use App\Filament\Resources\WorkLogResource;
 use App\Filament\Widgets\InvoiceCostsStatWidget;
 use Chiiya\FilamentAccessControl\FilamentAccessControlPlugin;
@@ -95,6 +96,7 @@ class AppPanelProvider extends PanelProvider
                                 ...Backups::getNavigationItems(),
                                 ...PaymentMethodResource::getNavigationItems(),
                                 ...ExchangeRateResource::getNavigationItems(),
+                                ...TaxResource::getNavigationItems(),
                             ]),
                         NavigationGroup::make('Users')->icon('heroicon-o-users')
                             ->label(__('nav.users'))

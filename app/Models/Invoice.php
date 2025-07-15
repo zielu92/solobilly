@@ -329,11 +329,7 @@ class Invoice extends Model
                         ->debounce()
                         ->default(setting('invoice.default_tax_rate'))
                         ->options([
-                            '23' => '23%',
-                            '22' => '22%',
-                            '8' => '8%',
-                            '5' => '5%',
-                            '0' => '0%',
+                            ...Tax::all()->pluck('name', 'rate'),
                             'zw' => __('invoices.tax_rates.zw'),
                             'np' => __('invoices.tax_rates.np'),
                         ])

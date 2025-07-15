@@ -2,17 +2,52 @@
 
 namespace Database\Seeders;
 
+use Chiiya\FilamentAccessControl\Enumerators\PermissionName;
+use Chiiya\FilamentAccessControl\Enumerators\RoleName;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class PermissionsAndRolesSeeder extends Seeder
 {
+
+
+    /**
+     * Seed the application's database.
+     */
+    protected static array $roles = [RoleName::SUPER_ADMIN];
+
+    protected static array $permissions = [
+        PermissionName::UPDATE_ADMIN_USERS,
+        PermissionName::UPDATE_PERMISSIONS,
+    ];
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
+
+        foreach (self::$permissions as $permission) {
+            if(!Permission::where('name', $permission)->exists()) {
+                Permission::create([
+                    'name' => $permission,
+                    'guard_name' => 'filament',
+                ]);
+            }
+        }
+
+        foreach (self::$roles as $role) {
+            if(!Role::where('name', $role)->exists()) {
+                $role = Role::create([
+                    'name' => $role,
+                    'guard_name' => 'filament',
+                ]);
+                foreach (self::$permissions as $permission) {
+                    $role->givePermissionTo($permission);
+                }
+            }
+        }
         //permissions only for Admin
         $permissionsAdmin = [
             'settings.view',
@@ -76,14 +111,23 @@ class PermissionsAndRolesSeeder extends Seeder
             'transfers.delete',
             'transfers.restore',
             'transfers.forceDelete',
+            'taxes.view',
+            'tax.view',
+            'taxes.create',
+            'taxes.update',
+            'taxes.delete',
+            'taxes.restore',
+            'taxes.forceDelete',
         ];
 
         $allPermissions = array_merge($permissionsAdmin, $commonPermissions);
         foreach ($allPermissions as $permission) {
-            Permission::updateOrCreate([
-                'name' => $permission,
-                'guard_name' => 'filament',
-            ]);
+            if(!Permission::where('name', $permission)->exists()) {
+                Permission::updateOrCreate([
+                    'name' => $permission,
+                    'guard_name' => 'filament',
+                ]);
+            }
         }
 
         // Assign permissions to role

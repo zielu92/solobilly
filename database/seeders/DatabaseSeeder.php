@@ -5,13 +5,17 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Chiiya\FilamentAccessControl\Database\Seeders\FilamentAccessControlSeeder;
+use Chiiya\FilamentAccessControl\Enumerators\PermissionName;
 use Chiiya\FilamentAccessControl\Enumerators\RoleName;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
+
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
@@ -19,8 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CurrencySeeder::class,
             SettingsSeeder::class,
-            FilamentAccessControlSeeder::class,
-            PermissionsAndRolesSeeder::class
+            PermissionsAndRolesSeeder::class,
+            TaxesSeeder::class
         ]);
 
         if(!User::find(1)) {

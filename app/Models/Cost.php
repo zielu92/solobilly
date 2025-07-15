@@ -129,9 +129,11 @@ class Cost extends Model
                 ->live()
                 ->numeric()
                 ->minValue(0)
-                ->afterStateUpdated(fn($state, callable $set, callable $get) =>
-                $set('amount_gross', round(is_numeric($get('amount')) ? $get('amount') * 1.23 : 0, 2))
-                ),
+                ->afterStateUpdated(function($state, callable $set, callable $get) {
+                    if(setting('invoice.default_tax_rate')!= null) {
+                        $set('amount_gross', round(is_numeric($get('amount')) ? $get('amount') * setting('invoice.default_tax_rate') : 0, 2));
+                    }
+                }),
             Select::make('currency_id')
                 ->label(__('invoices.currency'))
                 ->columnSpan(1)

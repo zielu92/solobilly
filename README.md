@@ -1,66 +1,96 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/zielu92/solobilly?utm_source=oss&utm_medium=github&utm_campaign=zielu92%2Fsolobilly&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+# Solobilly
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Solobilly** is an all-in-one management app for freelancers and small businesses. It simplifies tracking expenses, generating invoices, and organizing essential data for accounting.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Dashboard** – Overview with key statistics
+- **Holiday Calendar** – View and manage holidays
+- **Exchange Rates** – Display current exchange rates
+- **Buyers List** – Manage clients and customer data
+- **Invoice Generation** – Create and download invoices
+- **Expense Tracking** – Categorized cost tracking
+- **Payment Methods** – Support for multiple custom payment methods
+- **Worklogs** – Track work hours and assignments
+- **User Management** – Role-based permission system
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Option 1: Docker (Recommended)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone https://github.com/zielu92/solobilly.git
+cd solobilly
+cp .env.example .env
+./vendor/bin/sail build --no-cache
+./vendor/bin/sail up
+./vendor/bin/sail artisan migrate --seed
+``` 
+### Option 1: Docker (Recommended)
+```bash
+git clone https://github.com/zielu92/solobilly.git
+cd solobilly
+cp .env.example .env
+# Edit .env to configure database and other settings
+composer install
+php artisan key:generate
+php artisan migrate --seed
+```
+---
+## Custom Payment Methods
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Solobilly supports modular, pluggable payment methods via [Filament Modules](https://github.com/savannabits/filament-modules).
 
-## Laravel Sponsors
+### Creating a Custom Payment Module
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Create the module**
 
-### Premium Partners
+   ```bash
+   php artisan module:make MyPaymentMethod
+   ```
+2. **Create a handler class**
+Extend `Modules/Payments/app/Payments/Payment.php` with your custom logic.
+3. **Add configuration**
+   Create the config file:
+   `Modules/MyPaymentMethod/config/paymentmethods.php`
+4. **Register the config in the service provider**
+   Update Modules/MyPaymentMethod/Providers/MyPaymentMethodServiceProvider.php:
+```php
+$this->mergeConfigFrom(
+    module_path($this->name, '/config/paymentmethods.php'),
+    'payment_methods'
+);
+```
+## Custom Invoice Templates
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Invoices are composed of two parts:
 
-## Contributing
+- **Main Invoice Template**
+- **Optional Payment Method Templates**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### How to Customize
 
-## Code of Conduct
+- **Templates**  
+  Place main invoice templates isn:  
+  `resources/views/invoice/template/`  
+  Use the included `Test` template as a reference.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **CSS**  
+  Store invoice styles in:  
+  `public/css/invoice/`  
+  ⚠️ Only use CSS 2.0 features or lower for compatibility with [laravel-dompdf](https://github.com/barryvdh/laravel-dompdf).
 
-## Security Vulnerabilities
+- **Payment Method Templates**  
+  Add or reuse payment method templates in:  
+  `Modules/Payments/resources/views/`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-source and available under the [MIT License](https://opensource.org/licenses/MIT).

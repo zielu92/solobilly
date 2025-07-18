@@ -31,7 +31,7 @@ cp .env.example .env
 ./vendor/bin/sail up
 ./vendor/bin/sail artisan migrate --seed
 ``` 
-### Option 1: Docker (Recommended)
+### Option 2: Manual setup (without Docker)
 ```bash
 git clone https://github.com/zielu92/solobilly.git
 cd solobilly

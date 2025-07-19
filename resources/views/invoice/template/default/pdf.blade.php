@@ -1,5 +1,5 @@
 <?php
-$colspan = 5;
+$colspan = 6;
 if($showQty)
     $colspan += 1;
 if($showDiscount)
@@ -102,19 +102,9 @@ if($invoice->showUnits)
                     <span class="products-table-eng">Description</span>
                 </th>
                 <th>
-                    Wartość netto<br>
-                    <span class="products-table-eng">Net value</span>
+                    Wartość jednostkowa<br>
+                    <span class="products-table-eng">unit value</span>
                 </th>
-                <th class="text-right">
-                    Stawka VAT<br>
-                    <span class="products-table-eng">VAT</span>
-                </th>
-                @if($showDiscount)
-                    <th class="text-right">
-                        Rabat<br>
-                        <span class="products-table-eng">Discount</span>
-                    </th>
-                @endif
                 @if($showQty)
                     <th class="text-right">
                         Ilość<br>
@@ -127,6 +117,21 @@ if($invoice->showUnits)
                         <span class="products-table-eng">Units</span>
                     </th>
                 @endif
+                <th>
+                    Wartość netto<br>
+                    <span class="products-table-eng">net value</span>
+                </th>
+                <th class="text-right">
+                    Stawka VAT<br>
+                    <span class="products-table-eng">VAT</span>
+                </th>
+                @if($showDiscount)
+                    <th class="text-right">
+                        Rabat<br>
+                        <span class="products-table-eng">Discount</span>
+                    </th>
+                @endif
+
                 <th class="text-right">
                     Kwota VAT<br>
                     <span class="products-table-eng">Vat amount</span>
@@ -149,14 +154,6 @@ if($invoice->showUnits)
                     <td class="text-right">
                         {{$item->price_net}} {{html_entity_decode($invoice->currency->symbol)}}
                     </td>
-                    <td class="text-right">
-                        {{showTaxRate($item->tax_rate, true)}}
-                    </td>
-                    @if($showDiscount)
-                        <td class="text-right">
-                            {{$item->total_discount}} {{html_entity_decode($invoice->currency->symbol)}}
-                        </td>
-                    @endif
                     @if($showQty)
                         <td class="text-right">
                             {{$item->quantity}}
@@ -168,10 +165,23 @@ if($invoice->showUnits)
                         </td>
                     @endif
                     <td class="text-right">
-                        {{$item->tax_amount}} {{html_entity_decode($invoice->currency->symbol)}}
+                        {{$item->total_net}} {{html_entity_decode($invoice->currency->symbol)}}
                     </td>
                     <td class="text-right">
-                        {{$item->price_gross}} {{html_entity_decode($invoice->currency->symbol)}}
+                        {{showTaxRate($item->tax_rate, true)}}
+                    </td>
+                    @if($showDiscount)
+                        <td class="text-right">
+                            {{$item->total_discount}} {{html_entity_decode($invoice->currency->symbol)}}
+                        </td>
+                    @endif
+
+
+                    <td class="text-right">
+                        {{$item->total_tax}} {{html_entity_decode($invoice->currency->symbol)}}
+                    </td>
+                    <td class="text-right">
+                        {{$item->total_gross}} {{html_entity_decode($invoice->currency->symbol)}}
                     </td>
                 </tr>
             @endforeach

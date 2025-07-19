@@ -328,11 +328,12 @@ class Invoice extends Model
                         ->lazy()
                         ->debounce()
                         ->default(setting('invoice.default_tax_rate'))
-                        ->options([
-                            ...Tax::query()->orderBy('rate', 'desc')->pluck('name', 'rate'),
-                            'zw' => __('invoices.tax_rates.zw'),
-                            'np' => __('invoices.tax_rates.np'),
-                        ])
+                        ->options(function () {
+                            $taxOptions = Tax::query()->orderBy('rate', 'desc')->pluck('name', 'rate')->toArray();
+                            $taxOptions['zw'] = __('invoices.tax_rates.zw');
+                            $taxOptions['np'] = __('invoices.tax_rates.np');
+                            return $taxOptions;
+                        })
                         ->required()
                         ->afterStateUpdated(fn($state, callable $set, callable $get) => self::updateTotals($set, $get)),
 
@@ -502,7 +503,7 @@ class Invoice extends Model
 
             // Calculate item totals
             $itemTotalNet = max(($quantity * $priceNet) - $discount, 0);
-            $taxPercentage = in_array($taxRate, ['zw', 'np']) ? 0 : (int) $taxRate;
+            $taxPercentage = in_array($taxRate, ['zw', 'np']) ? 0 : $taxRate;
             $itemTotalTax = round(($itemTotalNet * $taxPercentage) / 100, 2);
             $itemTotalGross = round($itemTotalNet + $itemTotalTax, 2);
 
